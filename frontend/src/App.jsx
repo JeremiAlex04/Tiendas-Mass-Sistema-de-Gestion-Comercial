@@ -1,0 +1,65 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import AuthLayout from './layouts/AuthLayout';
+import AdminLayout from './layouts/AdminLayout';
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
+import UsersPage from './pages/UsersPage';
+import SuppliersPage from './pages/SuppliersPage';
+import PurchaseOrdersPage from './pages/PurchaseOrdersPage';
+import InventoryAdjustmentsPage from './pages/InventoryAdjustmentsPage';
+import SalesHistoryPage from './pages/SalesHistoryPage';
+import ProtectedRoute from './components/ProtectedRoute';
+import NotificationToast from './components/ui/NotificationToast';
+
+// Placeholder pages
+import PosPage from './pages/PosPage';
+import ProductListPage from './pages/ProductListPage';
+import InventoryPage from './pages/InventoryPage';
+import ReportsPage from './pages/SalesReports'; // Using SalesReports as the main Reports page
+const UnauthorizedPage = () => <div className="p-8 text-center text-red-600 font-bold">No autorizado</div>;
+
+function App() {
+  return (
+    <Router>
+      <NotificationToast />
+      <Routes>
+        {/* Public Routes */}
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/unauthorized" element={<UnauthorizedPage />} />
+        </Route>
+
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AdminLayout />}>
+            <Route path="/dashboard" element={<DashboardPage />} />
+
+            <Route element={<ProtectedRoute allowedRoles={['ADMIN', 'CAJERO']} />}>
+              <Route path="/pos" element={<PosPage />} />
+              <Route path="/mis-ventas" element={<SalesHistoryPage />} />
+            </Route>
+
+            <Route element={<ProtectedRoute allowedRoles={['ADMIN', 'ALMACENERO']} />}>
+              <Route path="/productos" element={<ProductListPage />} />
+              <Route path="/inventario" element={<InventoryPage />} />
+            </Route>
+
+            <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
+              <Route path="/usuarios" element={<UsersPage />} />
+              <Route path="/reportes" element={<ReportsPage />} />
+              <Route path="/proveedores" element={<SuppliersPage />} />
+              <Route path="/ordenes" element={<PurchaseOrdersPage />} />
+              <Route path="/ajustes" element={<InventoryAdjustmentsPage />} />
+            </Route>
+          </Route>
+        </Route>
+
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
