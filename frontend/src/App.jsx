@@ -15,6 +15,7 @@ import NotificationToast from './components/ui/NotificationToast';
 // Placeholder pages
 import PosPage from './pages/PosPage';
 import ProductListPage from './pages/ProductListPage';
+import CategoriesPage from './pages/CategoriesPage';
 import InventoryPage from './pages/InventoryPage';
 import ReportsPage from './pages/SalesReports';
 import StockReports from './pages/StockReports';
@@ -45,6 +46,7 @@ function App() {
 
             <Route element={<ProtectedRoute allowedRoles={['ADMINISTRADOR', 'ALMACENERO']} />}>
               <Route path="/productos" element={<ProductListPage />} />
+              <Route path="/categorias" element={<CategoriesPage />} />
               <Route path="/inventario" element={<InventoryPage />} />
               <Route path="/reportes-stock" element={<StockReports />} />
             </Route>

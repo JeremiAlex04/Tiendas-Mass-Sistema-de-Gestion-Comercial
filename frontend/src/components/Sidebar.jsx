@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, Package, Users, FileText, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Package, Users, FileText, Settings, LogOut, Tag } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 
 import logo from '../assets/tienda_mass_logo.png';
@@ -13,6 +13,7 @@ const Sidebar = () => {
         { path: '/pos', icon: ShoppingCart, label: 'Punto de Venta', roles: ['ADMINISTRADOR', 'CAJERO'] },
         { path: '/mis-ventas', icon: FileText, label: 'Mis Ventas', roles: ['CAJERO'] },
         { path: '/productos', icon: Package, label: 'Productos', roles: ['ADMINISTRADOR', 'ALMACENERO'] },
+        { path: '/categorias', icon: Tag, label: 'Categorías', roles: ['ADMINISTRADOR', 'ALMACENERO'] },
         { path: '/inventario', icon: Package, label: 'Inventario', roles: ['ADMINISTRADOR', 'ALMACENERO'] },
         { path: '/ajustes', icon: Settings, label: 'Ajustes Stock', roles: ['ADMINISTRADOR', 'ALMACENERO'] },
         { path: '/usuarios', icon: Users, label: 'Usuarios', roles: ['ADMINISTRADOR'] },
