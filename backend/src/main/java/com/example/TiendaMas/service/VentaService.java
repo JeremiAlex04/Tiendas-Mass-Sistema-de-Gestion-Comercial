@@ -45,6 +45,9 @@ public class VentaService {
         @Autowired
         private InventarioService inventarioService;
 
+        @Autowired
+        private AuditoriaService auditoriaService;
+
         @Transactional
         public Venta registrarVenta(VentaRequest request) {
                 Empleado empleado = empleadoRepository.findById(request.getUsuarioId())
@@ -93,6 +96,9 @@ public class VentaService {
                 comprobante.setNumeroSerie(UUID.randomUUID().toString().substring(0, 8).toUpperCase()); // Mock number
                 comprobante.setEstadoSunat("PENDIENTE");
                 comprobanteRepository.save(comprobante);
+
+                auditoriaService.registrarAccion("REGISTRO_VENTA", "VENTA-" + venta.getIdVenta(), empleado,
+                                "POS-TERMINAL");
 
                 return venta;
         }

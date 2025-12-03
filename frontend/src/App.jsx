@@ -16,7 +16,9 @@ import NotificationToast from './components/ui/NotificationToast';
 import PosPage from './pages/PosPage';
 import ProductListPage from './pages/ProductListPage';
 import InventoryPage from './pages/InventoryPage';
-import ReportsPage from './pages/SalesReports'; // Using SalesReports as the main Reports page
+import ReportsPage from './pages/SalesReports';
+import StockReports from './pages/StockReports';
+
 const UnauthorizedPage = () => <div className="p-8 text-center text-red-600 font-bold">No autorizado</div>;
 
 function App() {
@@ -35,17 +37,18 @@ function App() {
           <Route element={<AdminLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
 
-            <Route element={<ProtectedRoute allowedRoles={['ADMIN', 'CAJERO']} />}>
+            <Route element={<ProtectedRoute allowedRoles={['ADMINISTRADOR', 'CAJERO']} />}>
               <Route path="/pos" element={<PosPage />} />
               <Route path="/mis-ventas" element={<SalesHistoryPage />} />
             </Route>
 
-            <Route element={<ProtectedRoute allowedRoles={['ADMIN', 'ALMACENERO']} />}>
+            <Route element={<ProtectedRoute allowedRoles={['ADMINISTRADOR', 'ALMACENERO']} />}>
               <Route path="/productos" element={<ProductListPage />} />
               <Route path="/inventario" element={<InventoryPage />} />
+              <Route path="/reportes-stock" element={<StockReports />} />
             </Route>
 
-            <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
+            <Route element={<ProtectedRoute allowedRoles={['ADMINISTRADOR']} />}>
               <Route path="/usuarios" element={<UsersPage />} />
               <Route path="/reportes" element={<ReportsPage />} />
               <Route path="/proveedores" element={<SuppliersPage />} />

@@ -23,4 +23,9 @@ public class ReporteController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fin) {
         return ResponseEntity.ok(reporteService.getVentasPorPeriodo(inicio, fin));
     }
+
+    @GetMapping("/stock")
+    public ResponseEntity<List<com.example.TiendaMas.entity.Inventario>> getStock() {
+        return ResponseEntity.ok(reporteService.getReporteStock());
+    }
 }

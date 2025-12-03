@@ -1,37 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { RefreshCw } from 'lucide-react';
+import useAuthStore from '../store/authStore';
 import useNotificationStore from '../store/notificationStore';
 
 const InventoryAdjustmentsPage = () => {
+    const [products, setProducts] = useState([]);
     const [formData, setFormData] = useState({
         productoId: '',
-        sucursalId: '1', // Default to 1 for demo, could be fetched from user context or selection
-        cantidad: 0,
+        sucursalId: 1, // Default to main branch for now
         tipoMovimiento: 'ENTRADA',
-        motivo: 'Ajuste Manual'
+        cantidad: 0,
+        motivo: ''
     });
-    const [products, setProducts] = useState([]);
 
+    const { user } = useAuthStore();
     const { addNotification } = useNotificationStore();
 
-    React.useEffect(() => {
+    useEffect(() => {
         const fetchProducts = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get('http://localhost:8080/productos', { headers: { Authorization: `Bearer ${token}` } });
+                const response = await axios.get('http://localhost:8080/productos', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
                 setProducts(response.data);
-            } catch (e) { console.error(e); }
+            } catch (error) {
+                console.error(error);
+                addNotification('Error al cargar productos', 'error');
+            }
         };
         fetchProducts();
-    }, []);
+    }, [addNotification]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
             await axios.post(`http://localhost:8080/inventario/ajuste`, null, {
-                params: formData,
+                params: { ...formData, usuarioId: user.idUsuario },
                 headers: { Authorization: `Bearer ${token}` }
             });
             addNotification('Ajuste realizado con éxito', 'success');

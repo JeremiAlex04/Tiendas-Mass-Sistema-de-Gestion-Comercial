@@ -13,9 +13,14 @@ public class ReporteService {
     @Autowired
     private VentaRepository ventaRepository;
 
+    @Autowired
+    private com.example.TiendaMas.repository.InventarioRepository inventarioRepository;
+
     public List<Venta> getVentasPorPeriodo(LocalDateTime inicio, LocalDateTime fin) {
         return ventaRepository.findByFechaBetween(inicio, fin);
     }
 
-    // More report methods can be added here
+    public List<com.example.TiendaMas.entity.Inventario> getReporteStock() {
+        return inventarioRepository.findAll();
+    }
 }

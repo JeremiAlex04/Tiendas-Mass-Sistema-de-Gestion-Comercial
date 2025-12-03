@@ -7,16 +7,16 @@ const Sidebar = () => {
     const location = useLocation();
     const { logout, user } = useAuthStore();
     const navItems = [
-        { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', roles: ['ADMIN', 'CAJERO', 'ALMACENERO'] },
-        { path: '/pos', icon: ShoppingCart, label: 'Punto de Venta', roles: ['ADMIN', 'CAJERO'] },
+        { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', roles: ['ADMINISTRADOR', 'CAJERO', 'ALMACENERO'] },
+        { path: '/pos', icon: ShoppingCart, label: 'Punto de Venta', roles: ['ADMINISTRADOR', 'CAJERO'] },
         { path: '/mis-ventas', icon: FileText, label: 'Mis Ventas', roles: ['CAJERO'] },
-        { path: '/productos', icon: Package, label: 'Productos', roles: ['ADMIN', 'ALMACENERO'] },
-        { path: '/inventario', icon: Package, label: 'Inventario', roles: ['ADMIN', 'ALMACENERO'] },
-        { path: '/ajustes', icon: Settings, label: 'Ajustes Stock', roles: ['ADMIN', 'ALMACENERO'] },
-        { path: '/usuarios', icon: Users, label: 'Usuarios', roles: ['ADMIN'] },
-        { path: '/proveedores', icon: Users, label: 'Proveedores', roles: ['ADMIN', 'ALMACENERO'] },
-        { path: '/ordenes', icon: FileText, label: 'Órdenes Compra', roles: ['ADMIN', 'ALMACENERO'] },
-        { path: '/reportes', icon: FileText, label: 'Reportes', roles: ['ADMIN'] },
+        { path: '/productos', icon: Package, label: 'Productos', roles: ['ADMINISTRADOR', 'ALMACENERO'] },
+        { path: '/inventario', icon: Package, label: 'Inventario', roles: ['ADMINISTRADOR', 'ALMACENERO'] },
+        { path: '/ajustes', icon: Settings, label: 'Ajustes Stock', roles: ['ADMINISTRADOR', 'ALMACENERO'] },
+        { path: '/usuarios', icon: Users, label: 'Usuarios', roles: ['ADMINISTRADOR'] },
+        { path: '/proveedores', icon: Users, label: 'Proveedores', roles: ['ADMINISTRADOR', 'ALMACENERO'] },
+        { path: '/ordenes', icon: FileText, label: 'Órdenes Compra', roles: ['ADMINISTRADOR', 'ALMACENERO'] },
+        { path: '/reportes', icon: FileText, label: 'Reportes', roles: ['ADMINISTRADOR'] },
     ];
 
     const filteredNavItems = navItems.filter(item => item.roles.includes(user?.role));

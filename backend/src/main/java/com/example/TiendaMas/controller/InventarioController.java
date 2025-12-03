@@ -46,9 +46,10 @@ public class InventarioController {
             @RequestParam Long sucursalId,
             @RequestParam int cantidad,
             @RequestParam String tipoMovimiento, // ENTRADA, SALIDA
-            @RequestParam String motivo) {
+            @RequestParam String motivo,
+            @RequestParam Long usuarioId) {
 
-        inventarioService.registrarMovimiento(productoId, sucursalId, tipoMovimiento, cantidad, motivo);
+        inventarioService.registrarMovimiento(productoId, sucursalId, tipoMovimiento, cantidad, motivo, usuarioId);
         return ResponseEntity.ok("Ajuste realizado correctamente");
     }
 }

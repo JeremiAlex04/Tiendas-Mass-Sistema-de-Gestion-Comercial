@@ -25,9 +25,21 @@ public class InventarioService {
         return inventarioRepository.findByProductoAndSucursal(producto, sucursal);
     }
 
+    @Autowired
+    private com.example.TiendaMas.repository.EmpleadoRepository empleadoRepository;
+
+    @Autowired
+    private AuditoriaService auditoriaService;
+
     @Transactional
     public void ajustarStock(Producto producto, Sucursal sucursal, int cantidad, String tipoMovimiento,
             String referencia) {
+        ajustarStock(producto, sucursal, cantidad, tipoMovimiento, referencia, null);
+    }
+
+    @Transactional
+    public void ajustarStock(Producto producto, Sucursal sucursal, int cantidad, String tipoMovimiento,
+            String referencia, com.example.TiendaMas.entity.Empleado empleado) {
         Inventario inventario = inventarioRepository.findByProductoAndSucursal(producto, sucursal)
                 .orElseGet(() -> {
                     Inventario inv = new Inventario();
@@ -60,25 +72,42 @@ public class InventarioService {
         kardex.setProducto(producto);
         kardex.setSucursal(sucursal);
         kardex.setTipoMovimiento(tipoMovimiento);
-        kardex.setCantidad(cantidad); // For AJUSTE this might be misleading if it's absolute.
-        // If AJUSTE is absolute, the 'movement' quantity is nuevoStock - stockAnterior.
+        kardex.setCantidad(cantidad);
         if ("AJUSTE".equals(tipoMovimiento)) {
             kardex.setCantidad(nuevoStock - stockAnterior);
         }
         kardex.setStockResultante(nuevoStock);
         kardex.setReferencia(referencia);
         kardexRepository.save(kardex);
+
+        // Registrar Auditoria
+        if (empleado != null) {
+            auditoriaService.registrarAccion("AJUSTE_STOCK", "PRODUCTO-" + producto.getIdProducto(), empleado,
+                    "INVENTARIO");
+        }
     }
 
     @Transactional
     public void registrarMovimiento(Long productoId, Long sucursalId, String tipoMovimiento, int cantidad,
-            String motivo) {
+            String motivo, Long usuarioId) {
         Producto producto = new Producto();
         producto.setIdProducto(productoId);
 
         Sucursal sucursal = new Sucursal();
         sucursal.setIdSucursal(sucursalId);
 
-        ajustarStock(producto, sucursal, cantidad, tipoMovimiento, motivo);
+        com.example.TiendaMas.entity.Empleado empleado = null;
+        if (usuarioId != null) {
+            empleado = empleadoRepository.findById(usuarioId).orElse(null);
+        }
+
+        ajustarStock(producto, sucursal, cantidad, tipoMovimiento, motivo, empleado);
+    }
+
+    // Keep old method for compatibility if needed, or just update callers
+    @Transactional
+    public void registrarMovimiento(Long productoId, Long sucursalId, String tipoMovimiento, int cantidad,
+            String motivo) {
+        registrarMovimiento(productoId, sucursalId, tipoMovimiento, cantidad, motivo, null);
     }
 }
