@@ -28,4 +28,20 @@ public class ReporteController {
     public ResponseEntity<List<com.example.TiendaMas.entity.Inventario>> getStock() {
         return ResponseEntity.ok(reporteService.getReporteStock());
     }
+
+    @GetMapping("/dashboard/stats")
+    public ResponseEntity<com.example.TiendaMas.dto.DashboardStatsDTO> getDashboardStats() {
+        return ResponseEntity.ok(reporteService.getDashboardStats());
+    }
+
+    @GetMapping("/dashboard/top-productos")
+    public ResponseEntity<List<com.example.TiendaMas.dto.ProductoTopDTO>> getTopProductos(
+            @RequestParam(defaultValue = "5") int limit) {
+        return ResponseEntity.ok(reporteService.getTopProductos(limit));
+    }
+
+    @GetMapping("/dashboard/ventas-semana")
+    public ResponseEntity<List<com.example.TiendaMas.dto.VentasDiaDTO>> getVentasSemana() {
+        return ResponseEntity.ok(reporteService.getVentasSemana());
+    }
 }

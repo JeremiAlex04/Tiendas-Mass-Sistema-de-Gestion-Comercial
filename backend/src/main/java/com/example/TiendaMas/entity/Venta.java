@@ -40,6 +40,9 @@ public class Venta {
     @Column(length = 20)
     private String estado; // COMPLETADA, ANULADA
 
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private java.util.List<DetalleVenta> detalles;
+
     @PrePersist
     protected void onCreate() {
         fecha = LocalDateTime.now();
