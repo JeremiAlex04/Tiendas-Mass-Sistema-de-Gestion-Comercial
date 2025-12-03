@@ -38,13 +38,13 @@ const UsersPage = () => {
 
     const handleEdit = (user) => {
         setFormData({
-            nombres: user.nombres,
-            apellidos: user.apellidos,
-            email: user.email,
-            username: user.username,
+            nombres: user.nombres || '',
+            apellidos: user.apellidos || '',
+            email: user.email || '',
+            username: user.usuario,
             passwordHash: '', // Keep empty to not change
             role: user.rol || 'CAJERO',
-            estado: user.estado || 'ACTIVO'
+            estado: 'ACTIVO' // Not in entity
         });
         setEditingId(user.idEmpleado);
         setShowModal(true);
@@ -61,7 +61,7 @@ const UsersPage = () => {
             fetchUsers();
         } catch (error) {
             console.error(error);
-            addNotification('Error al eliminar usuario', 'error');
+            addNotification('Error al eliminar usuario: ' + (error.response?.data?.message || error.message), 'error');
         }
     };
 
@@ -70,8 +70,14 @@ const UsersPage = () => {
         try {
             const token = localStorage.getItem('token');
             const payload = {
-                ...formData,
-                rol: formData.role // Send string directly
+                usuario: formData.username,
+                password: formData.passwordHash,
+                nombres: formData.nombres, // Note: Empleado entity doesn't have nombres/apellidos/email/estado, so these will be ignored by backend unless added to entity.
+                apellidos: formData.apellidos, // Assuming we only care about auth fields for now or will add them later.
+                email: formData.email,
+                rol: formData.role,
+                sucursal: { idSucursal: 1 }, // Default branch
+                fechaIngreso: new Date().toISOString().split('T')[0]
             };
 
             if (editingId) {
@@ -93,7 +99,7 @@ const UsersPage = () => {
             fetchUsers();
         } catch (error) {
             console.error(error);
-            addNotification('Error al guardar usuario', 'error');
+            addNotification('Error al guardar usuario: ' + (error.response?.data?.message || error.message), 'error');
         }
     };
 
@@ -136,16 +142,15 @@ const UsersPage = () => {
                                     {user.usuario}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {user.usuario} {/* Nombres not in Empleado entity, using usuario as placeholder or need to add fields */}
+                                    {user.nombres} {user.apellidos}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {/* Email not in Empleado entity */}
-                                    -
+                                    {user.email}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.rol}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800`}>
-                                        ACTIVO
+                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.estado === 'ACTIVO' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                        {user.estado}
                                     </span>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -169,7 +174,9 @@ const UsersPage = () => {
                         <form onSubmit={handleSubmit}>
                             <input className="w-full mb-2 p-2 border rounded" placeholder="Username" value={formData.username} onChange={e => setFormData({ ...formData, username: e.target.value })} required />
                             <input className="w-full mb-2 p-2 border rounded" placeholder="Password (dejar vacío si no cambia)" type="password" value={formData.passwordHash} onChange={e => setFormData({ ...formData, passwordHash: e.target.value })} />
-                            {/* Nombres/Apellidos/Email removed from form as they are not in Empleado entity based on previous view_file */}
+                            <input className="w-full mb-2 p-2 border rounded" placeholder="Nombres" value={formData.nombres} onChange={e => setFormData({ ...formData, nombres: e.target.value })} />
+                            <input className="w-full mb-2 p-2 border rounded" placeholder="Apellidos" value={formData.apellidos} onChange={e => setFormData({ ...formData, apellidos: e.target.value })} />
+                            <input className="w-full mb-2 p-2 border rounded" placeholder="Email" type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
 
                             <select className="w-full mb-2 p-2 border rounded" value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })}>
                                 <option value="CAJERO">Cajero</option>

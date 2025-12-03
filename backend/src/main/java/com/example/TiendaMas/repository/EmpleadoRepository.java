@@ -9,4 +9,9 @@ import java.util.Optional;
 @Repository
 public interface EmpleadoRepository extends JpaRepository<Empleado, Long> {
     Optional<Empleado> findByUsuario(String usuario);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
+    @org.springframework.data.jpa.repository.Query("UPDATE Empleado e SET e.estado = 'ACTIVO' WHERE e.estado IS NULL")
+    void updateNullEstados();
 }

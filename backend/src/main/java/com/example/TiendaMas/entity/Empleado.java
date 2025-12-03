@@ -32,4 +32,16 @@ public class Empleado {
 
     @Column(nullable = false)
     private LocalDate fechaIngreso;
+
+    @Column(nullable = false, length = 20)
+    private String estado = "ACTIVO"; // 'ACTIVO', 'INACTIVO'
+
+    @Column(length = 100)
+    private String nombres;
+
+    @Column(length = 100)
+    private String apellidos;
+
+    @Column(length = 100)
+    private String email;
 }

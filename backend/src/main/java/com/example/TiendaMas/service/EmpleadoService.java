@@ -18,7 +18,7 @@ public class EmpleadoService {
 
     @Transactional
     public Empleado registrarEmpleado(Empleado nuevoEmpleado, Empleado admin) {
-        if (!"ADMIN".equals(admin.getRol())) {
+        if (!"ADMINISTRADOR".equalsIgnoreCase(admin.getRol())) {
             throw new RuntimeException("Solo administradores pueden registrar empleados");
         }
 

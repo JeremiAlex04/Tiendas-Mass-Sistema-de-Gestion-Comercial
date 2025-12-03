@@ -52,7 +52,13 @@ public class EmpleadoController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteEmpleado(@PathVariable Long id) {
-        empleadoRepository.deleteById(id);
+    public ResponseEntity<?> deleteEmpleado(@PathVariable Long id) {
+        Empleado empleado = empleadoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+
+        empleado.setEstado("INACTIVO");
+        empleadoRepository.save(empleado);
+
+        return ResponseEntity.ok().build();
     }
 }
