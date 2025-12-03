@@ -11,10 +11,6 @@ const InventoryPage = () => {
         const fetchInventory = async () => {
             try {
                 const token = localStorage.getItem('token');
-                // Fetching products which should ideally contain stock info or we fetch inventory separately.
-                // For this demo, assuming we can get inventory list.
-                // Since we implemented InventarioController with /inventario/sucursal/{id}, let's use that.
-                // Assuming Sucursal ID 1 is the main one.
                 const response = await axios.get('http://localhost:8080/inventario/sucursal/1', {
                     headers: { Authorization: `Bearer ${token}` }
                 });

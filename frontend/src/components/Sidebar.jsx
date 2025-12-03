@@ -3,6 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, ShoppingCart, Package, Users, FileText, Settings, LogOut } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 
+import logo from '../assets/tienda_mass_logo.png';
+
 const Sidebar = () => {
     const location = useLocation();
     const { logout, user } = useAuthStore();
@@ -24,7 +26,7 @@ const Sidebar = () => {
     return (
         <div className="w-64 bg-white shadow-md flex flex-col">
             <div className="p-6 flex items-center justify-center border-b">
-                <h1 className="text-2xl font-bold text-primary">Tienda Mass</h1>
+                <img src={logo} alt="Tienda Mass" className="h-12 object-contain" />
             </div>
             <nav className="flex-1 overflow-y-auto py-4">
                 <ul>

@@ -27,8 +27,9 @@ function App() {
       <NotificationToast />
       <Routes>
         {/* Public Routes */}
+        {/* Public Routes */}
+        <Route path="/login" element={<LoginPage />} />
         <Route element={<AuthLayout />}>
-          <Route path="/login" element={<LoginPage />} />
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
         </Route>
 
