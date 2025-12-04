@@ -155,8 +155,10 @@ const PosPage = () => {
             addNotification('Venta realizada con éxito!', 'success');
             // Don't clear cart yet, wait for receipt close
         } catch (error) {
-            console.error(error);
-            addNotification('Error al procesar la venta', 'error');
+            console.error('Error processing sale:', error);
+            console.error('Error response:', error.response);
+            const msg = error.response?.data?.message || 'Error al procesar la venta';
+            addNotification(msg, 'error');
         } finally {
             setProcessing(false);
         }
