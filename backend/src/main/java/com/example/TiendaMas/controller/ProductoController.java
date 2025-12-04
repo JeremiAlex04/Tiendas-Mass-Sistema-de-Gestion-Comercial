@@ -70,8 +70,48 @@ public class ProductoController {
     }
 
     @PostMapping
-    public Producto create(@RequestBody Producto producto) {
-        return productoService.save(producto);
+    public Producto create(@RequestBody com.example.TiendaMas.dto.ProductoDTO productoDTO) {
+        Producto producto = new Producto();
+        producto.setCodigoBarras(productoDTO.getCodigoBarras());
+        producto.setNombre(productoDTO.getNombre());
+        producto.setDescripcion(productoDTO.getDescripcion());
+        producto.setPrecioVenta(productoDTO.getPrecioVenta());
+        producto.setPrecioCompra(productoDTO.getPrecioCompra());
+        producto.setStockMinimo(productoDTO.getStockMinimo());
+        producto.setEstado(productoDTO.getEstado());
+
+        if (productoDTO.getCategoriaId() != null) {
+            com.example.TiendaMas.entity.Categoria cat = new com.example.TiendaMas.entity.Categoria();
+            cat.setIdCategoria(productoDTO.getCategoriaId());
+            producto.setCategoria(cat);
+        }
+        if (productoDTO.getProveedorId() != null) {
+            com.example.TiendaMas.entity.Proveedor prov = new com.example.TiendaMas.entity.Proveedor();
+            prov.setIdProveedor(productoDTO.getProveedorId());
+            producto.setProveedor(prov);
+        }
+
+        Producto saved = productoService.save(producto);
+
+        // Initialize inventory if stock provided
+        if (productoDTO.getStockActual() != null && productoDTO.getStockActual() > 0) {
+            com.example.TiendaMas.entity.Sucursal sucursal = sucursalRepository.findById(1L).orElse(null);
+            if (sucursal != null) {
+                com.example.TiendaMas.entity.Inventario inv = new com.example.TiendaMas.entity.Inventario();
+                inv.setProducto(saved);
+                inv.setSucursal(sucursal);
+                inv.setCantidad(productoDTO.getStockActual());
+                inventarioService.save(inv);
+                System.out.println("Inventory created for product " + saved.getIdProducto() + " with stock "
+                        + productoDTO.getStockActual());
+            } else {
+                System.err.println("Sucursal 1 not found! Inventory not created.");
+            }
+        } else {
+            System.out.println("No initial stock provided or stock is 0");
+        }
+
+        return saved;
     }
 
     @PutMapping("/{id}")
@@ -86,10 +126,12 @@ public class ProductoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (productoService.findById(id).isPresent()) {
-            productoService.deleteById(id);
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
+        return productoService.findById(id)
+                .map(producto -> {
+                    producto.setEstado("INACTIVO");
+                    productoService.save(producto);
+                    return ResponseEntity.ok().<Void>build();
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }

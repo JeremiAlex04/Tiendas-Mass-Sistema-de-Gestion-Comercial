@@ -13,8 +13,10 @@ const ProductListPage = () => {
     }, [fetchProducts]);
 
     const filteredProducts = products.filter(p =>
-        p.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.codigoBarras.toLowerCase().includes(searchTerm.toLowerCase())
+        p.estado === 'ACTIVO' && (
+            p.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            p.codigoBarras.toLowerCase().includes(searchTerm.toLowerCase())
+        )
     );
 
     const [showModal, setShowModal] = useState(false);
@@ -89,8 +91,9 @@ const ProductListPage = () => {
                 precioVenta: parseFloat(formData.precioVenta),
                 precioCompra: parseFloat(formData.precioCompra),
                 stockMinimo: parseInt(formData.stockMinimo),
-                categoria: { idCategoria: parseInt(formData.categoriaId) },
-                proveedor: { idProveedor: parseInt(formData.proveedorId) },
+                stockActual: formData.stockInicial ? parseInt(formData.stockInicial) : 0,
+                categoriaId: parseInt(formData.categoriaId),
+                proveedorId: parseInt(formData.proveedorId),
                 estado: 'ACTIVO'
             };
 
@@ -211,9 +214,15 @@ const ProductListPage = () => {
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Stock Mínimo</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Stock Mínimo (Alerta)</label>
                                 <input className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none" placeholder="10" type="number" value={formData.stockMinimo} onChange={e => setFormData({ ...formData, stockMinimo: e.target.value })} required />
                             </div>
+                            {!editingId && (
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Stock Inicial</label>
+                                    <input className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none" placeholder="0" type="number" value={formData.stockInicial || ''} onChange={e => setFormData({ ...formData, stockInicial: e.target.value })} />
+                                </div>
+                            )}
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Categoría</label>

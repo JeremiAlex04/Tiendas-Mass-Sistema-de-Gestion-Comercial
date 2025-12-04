@@ -110,4 +110,9 @@ public class InventarioService {
             String motivo) {
         registrarMovimiento(productoId, sucursalId, tipoMovimiento, cantidad, motivo, null);
     }
+
+    @Transactional
+    public Inventario save(Inventario inventario) {
+        return inventarioRepository.save(inventario);
+    }
 }

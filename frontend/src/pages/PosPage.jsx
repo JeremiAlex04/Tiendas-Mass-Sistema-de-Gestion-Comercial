@@ -120,6 +120,10 @@ const PosPage = () => {
     };
 
     const handleCheckout = async () => {
+        if (!user?.idUsuario) {
+            addNotification('Error: Usuario no identificado. Inicie sesión nuevamente.', 'error');
+            return;
+        }
         if (!cajaAbierta) {
             addNotification('Debe abrir la caja antes de realizar ventas', 'error');
             setShowOpenCaja(true);
@@ -131,7 +135,7 @@ const PosPage = () => {
         try {
             const token = localStorage.getItem('token');
             const saleData = {
-                usuarioId: user?.idUsuario,
+                usuarioId: user.idUsuario,
                 sucursalId: 1, // Mock sucursal - ideally should come from user profile too
                 idCliente: null, // Explicitly sending null for anonymous client
                 metodoPago: 'EFECTIVO',
@@ -156,8 +160,14 @@ const PosPage = () => {
             // Don't clear cart yet, wait for receipt close
         } catch (error) {
             console.error('Error processing sale:', error);
-            console.error('Error response:', error.response);
-            const msg = error.response?.data?.message || 'Error al procesar la venta';
+            let msg = 'Error al procesar la venta';
+            if (error.response) {
+                msg = error.response.data?.message || msg;
+            } else if (error.request) {
+                msg = 'Error de conexión con el servidor';
+            } else {
+                msg = error.message;
+            }
             addNotification(msg, 'error');
         } finally {
             setProcessing(false);
@@ -330,30 +340,41 @@ const PosPage = () => {
                 </div>
 
                 <div className="flex-1 overflow-y-auto grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-4 content-start">
-                    {filteredProducts.map(product => (
-                        <div
-                            key={product.idProducto}
-                            className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 cursor-pointer hover:shadow-lg hover:border-secondary transition-all duration-200 flex flex-col justify-between group h-40"
-                            onClick={() => addToCart(product)}
-                        >
-                            <div>
-                                <div className="flex justify-between items-start mb-1">
-                                    <h3 className="font-bold text-gray-800 leading-tight line-clamp-2 group-hover:text-secondary transition-colors">{product.nombre}</h3>
-                                    <span className="text-xs font-medium bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{product.stockActual || 0} und</span>
+                    {filteredProducts.map(product => {
+                        const isOutOfStock = (product.stockActual || 0) <= 0;
+                        return (
+                            <div
+                                key={product.idProducto}
+                                className={`bg-white p-4 rounded-xl shadow-sm border border-gray-100 transition-all duration-200 flex flex-col justify-between group h-40 ${isOutOfStock ? 'opacity-60 grayscale' : 'cursor-pointer hover:shadow-lg hover:border-secondary'}`}
+                                onClick={() => !isOutOfStock && addToCart(product)}
+                            >
+                                <div>
+                                    <div className="flex justify-between items-start mb-1">
+                                        <h3 className="font-bold text-gray-800 leading-tight line-clamp-2 group-hover:text-secondary transition-colors">{product.nombre}</h3>
+                                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${isOutOfStock ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-500'}`}>
+                                            {isOutOfStock ? 'Agotado' : `${product.stockActual} und`}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-gray-400 mb-2">Cod: {product.codigoBarras}</p>
                                 </div>
-                                <p className="text-xs text-gray-400 mb-2">Cod: {product.codigoBarras}</p>
-                            </div>
-                            <div className="flex justify-between items-end mt-2">
-                                <div className="flex flex-col">
-                                    <span className="text-xs text-gray-400">Precio</span>
-                                    <span className="text-xl font-bold text-gray-900">S/ {product.precioVenta.toFixed(2)}</span>
+                                <div className="flex justify-between items-end mt-2">
+                                    <div className="flex flex-col">
+                                        <span className="text-xs text-gray-400">Precio</span>
+                                        <span className="text-xl font-bold text-gray-900">S/ {product.precioVenta.toFixed(2)}</span>
+                                    </div>
+                                    <button
+                                        disabled={isOutOfStock}
+                                        className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors shadow-sm ${isOutOfStock
+                                            ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                            : 'bg-primary text-gray-900 hover:bg-yellow-500 transform group-hover:scale-110'
+                                            }`}
+                                    >
+                                        <Plus className="w-5 h-5" />
+                                    </button>
                                 </div>
-                                <button className="w-8 h-8 bg-primary text-gray-900 rounded-full flex items-center justify-center hover:bg-yellow-500 transition-colors shadow-sm transform group-hover:scale-110">
-                                    <Plus className="w-5 h-5" />
-                                </button>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
 
