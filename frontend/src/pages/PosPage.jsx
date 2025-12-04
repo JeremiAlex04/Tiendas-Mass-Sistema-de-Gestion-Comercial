@@ -157,6 +157,7 @@ const PosPage = () => {
             });
             setShowReceipt(true);
             addNotification('Venta realizada con éxito!', 'success');
+            fetchProducts(); // Refresh stock
             // Don't clear cart yet, wait for receipt close
         } catch (error) {
             console.error('Error processing sale:', error);
