@@ -45,4 +45,22 @@ public class Producto {
     @ManyToOne
     @JoinColumn(name = "proveedor_id")
     private Proveedor proveedor;
+
+    // Legacy field mapping to satisfy existing database schema
+    @Column(name = "sku", length = 50)
+    private String sku;
+
+    @Column(name = "precio_costo", precision = 10, scale = 2)
+    private BigDecimal precioCosto;
+
+    @PrePersist
+    @PreUpdate
+    public void syncLegacyFields() {
+        if (this.sku == null || !this.sku.equals(this.codigoBarras)) {
+            this.sku = this.codigoBarras;
+        }
+        if (this.precioCosto == null || this.precioCosto.compareTo(this.precioCompra) != 0) {
+            this.precioCosto = this.precioCompra;
+        }
+    }
 }

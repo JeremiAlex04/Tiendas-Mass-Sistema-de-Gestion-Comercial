@@ -18,10 +18,26 @@ const PosPage = () => {
         fetchProducts();
     }, [fetchProducts]);
 
-    const filteredProducts = products.filter(p =>
-        p.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.sku.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.get('http://localhost:8080/categorias', { headers: { Authorization: `Bearer ${token}` } });
+                setCategories(response.data);
+            } catch (e) { console.error(e); }
+        };
+        fetchCategories();
+    }, []);
+
+    const filteredProducts = products.filter(p => {
+        const matchesSearch = p.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            p.codigoBarras.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCategory = selectedCategory ? p.categoria?.idCategoria === parseInt(selectedCategory) : true;
+        return matchesSearch && matchesCategory;
+    });
 
     const [showReceipt, setShowReceipt] = useState(false);
     const [lastSale, setLastSale] = useState(null);
@@ -117,6 +133,7 @@ const PosPage = () => {
             const saleData = {
                 usuarioId: user?.idUsuario,
                 sucursalId: 1, // Mock sucursal - ideally should come from user profile too
+                idCliente: null, // Explicitly sending null for anonymous client
                 metodoPago: 'EFECTIVO',
                 tipoComprobante: 'BOLETA',
                 detalles: cart.map(item => ({
@@ -277,44 +294,60 @@ const PosPage = () => {
 
             {/* Product List */}
             <div className="flex-1 flex flex-col">
-                <div className="mb-4 flex justify-between items-center">
-                    <div className="relative flex-1 mr-4">
+                <div className="mb-4 flex gap-4 items-center">
+                    <div className="relative flex-1">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <Search className="h-5 w-5 text-gray-400" />
                         </div>
                         <input
                             type="text"
-                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
-                            placeholder="Buscar productos por nombre o código..."
+                            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary shadow-sm"
+                            placeholder="Buscar por nombre o código..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
+                    <div className="w-48">
+                        <select
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary shadow-sm bg-white"
+                            value={selectedCategory}
+                            onChange={(e) => setSelectedCategory(e.target.value)}
+                        >
+                            <option value="">Todas las Categorías</option>
+                            {categories.map(c => <option key={c.idCategoria} value={c.idCategoria}>{c.nombre}</option>)}
+                        </select>
+                    </div>
                     {cajaAbierta && (
                         <button
                             onClick={() => setShowCloseCaja(true)}
-                            className="bg-red-100 text-red-700 px-4 py-2 rounded-lg hover:bg-red-200 transition-colors text-sm font-semibold whitespace-nowrap"
+                            className="bg-red-100 text-red-700 px-4 py-3 rounded-lg hover:bg-red-200 transition-colors text-sm font-semibold whitespace-nowrap shadow-sm"
                         >
                             Cerrar Caja
                         </button>
                     )}
                 </div>
 
-                <div className="flex-1 overflow-y-auto grid grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
+                <div className="flex-1 overflow-y-auto grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-4 content-start">
                     {filteredProducts.map(product => (
                         <div
                             key={product.idProducto}
-                            className="bg-white p-4 rounded-lg shadow cursor-pointer hover:shadow-md transition-shadow flex flex-col justify-between border-l-4 border-transparent hover:border-secondary"
+                            className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 cursor-pointer hover:shadow-lg hover:border-secondary transition-all duration-200 flex flex-col justify-between group h-40"
                             onClick={() => addToCart(product)}
                         >
                             <div>
-                                <h3 className="font-semibold text-gray-800">{product.nombre}</h3>
-                                <p className="text-sm text-gray-500 mb-2">Código: {product.codigoBarras}</p>
+                                <div className="flex justify-between items-start mb-1">
+                                    <h3 className="font-bold text-gray-800 leading-tight line-clamp-2 group-hover:text-secondary transition-colors">{product.nombre}</h3>
+                                    <span className="text-xs font-medium bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{product.stockActual || 0} und</span>
+                                </div>
+                                <p className="text-xs text-gray-400 mb-2">Cod: {product.codigoBarras}</p>
                             </div>
-                            <div className="flex justify-between items-center mt-2">
-                                <span className="text-lg font-bold text-secondary">S/ {product.precioVenta.toFixed(2)}</span>
-                                <button className="p-2 bg-blue-50 text-secondary rounded-full hover:bg-blue-100 transition-colors">
-                                    <Plus className="w-4 h-4" />
+                            <div className="flex justify-between items-end mt-2">
+                                <div className="flex flex-col">
+                                    <span className="text-xs text-gray-400">Precio</span>
+                                    <span className="text-xl font-bold text-gray-900">S/ {product.precioVenta.toFixed(2)}</span>
+                                </div>
+                                <button className="w-8 h-8 bg-primary text-gray-900 rounded-full flex items-center justify-center hover:bg-yellow-500 transition-colors shadow-sm transform group-hover:scale-110">
+                                    <Plus className="w-5 h-5" />
                                 </button>
                             </div>
                         </div>

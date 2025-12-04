@@ -58,14 +58,22 @@ const PurchaseOrdersPage = () => {
     };
 
     const handleCreateOrder = async () => {
-        // Simplified creation logic
+        if (!formData.proveedorId || !formData.productoId || !formData.cantidad || !formData.precioCosto) {
+            addNotification('Por favor complete todos los campos', 'error');
+            return;
+        }
+
         try {
             const token = localStorage.getItem('token');
             const payload = {
                 proveedorId: formData.proveedorId,
-                usuarioId: user.idUsuario, // Assuming user object has idUsuario
+                usuarioId: user.idUsuario,
                 detalles: [
-                    { productoId: 1, cantidad: 10, precioCosto: 50.00 } // Mock detail
+                    {
+                        productoId: formData.productoId,
+                        cantidad: parseInt(formData.cantidad),
+                        precioCosto: parseFloat(formData.precioCosto)
+                    }
                 ]
             };
             await axios.post('http://localhost:8080/ordenes', payload, {
@@ -73,6 +81,7 @@ const PurchaseOrdersPage = () => {
             });
             addNotification('Orden creada correctamente', 'success');
             setShowModal(false);
+            setFormData({ proveedorId: '', productoId: '', cantidad: '', precioCosto: '' });
             fetchOrders();
         } catch (error) {
             console.error(error);
@@ -172,17 +181,57 @@ const PurchaseOrdersPage = () => {
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Proveedor</label>
-                                <select className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none" onChange={e => setFormData({ ...formData, proveedorId: e.target.value })}>
+                                <select className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none" onChange={e => setFormData({ ...formData, proveedorId: e.target.value })} required>
                                     <option value="">Seleccionar Proveedor</option>
                                     {suppliers.map(s => <option key={s.idProveedor} value={s.idProveedor}>{s.razonSocial}</option>)}
                                 </select>
                             </div>
-                            <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                                <p className="text-sm text-blue-800 flex items-start">
-                                    <FileText className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" />
-                                    <span>Esta es una versión demo. Se creará una orden con 10 unidades del Producto ID 1 automáticamente.</span>
-                                </p>
+
+                            <div className="border-t pt-4 mt-4">
+                                <h3 className="text-sm font-bold text-gray-700 mb-3">Detalle del Producto</h3>
+                                <div className="space-y-3">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Producto</label>
+                                        <select
+                                            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none"
+                                            onChange={e => {
+                                                const prod = products.find(p => p.idProducto === parseInt(e.target.value));
+                                                setFormData({
+                                                    ...formData,
+                                                    productoId: e.target.value,
+                                                    precioCosto: prod ? prod.precioCompra : ''
+                                                });
+                                            }}
+                                        >
+                                            <option value="">Seleccionar Producto</option>
+                                            {products.map(p => <option key={p.idProducto} value={p.idProducto}>{p.nombre}</option>)}
+                                        </select>
+                                    </div>
+                                    <div className="flex gap-4">
+                                        <div className="flex-1">
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Cantidad</label>
+                                            <input
+                                                type="number"
+                                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none"
+                                                placeholder="0"
+                                                onChange={e => setFormData({ ...formData, cantidad: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="flex-1">
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Costo Unit.</label>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none"
+                                                placeholder="0.00"
+                                                value={formData.precioCosto || ''}
+                                                onChange={e => setFormData({ ...formData, precioCosto: e.target.value })}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+
                             <div className="flex justify-end gap-3 pt-4">
                                 <button onClick={() => setShowModal(false)} className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">Cancelar</button>
                                 <button onClick={handleCreateOrder} className="px-4 py-2 bg-secondary text-white font-medium rounded-lg hover:bg-blue-800 transition-colors">Crear Orden</button>
