@@ -93,7 +93,9 @@ public class VentaService {
                 Comprobante comprobante = new Comprobante();
                 comprobante.setVenta(venta);
                 comprobante.setTipo(request.getTipoComprobante());
-                comprobante.setNumeroSerie(UUID.randomUUID().toString().substring(0, 8).toUpperCase()); // Mock number
+                comprobante.setNumeroSerie("F001"); // Serie hardcoded for now
+                comprobante.setNumero(UUID.randomUUID().toString().substring(0, 8).toUpperCase()); // Correlative
+                comprobante.setTipoDoc("DNI"); // Default to DNI for now
                 comprobante.setEstadoSunat("PENDIENTE");
                 comprobanteRepository.save(comprobante);
 

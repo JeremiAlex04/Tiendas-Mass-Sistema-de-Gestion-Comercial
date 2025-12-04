@@ -25,7 +25,13 @@ public class Comprobante {
     private String numeroSerie;
 
     @Column(nullable = false, length = 20)
+    private String numero;
+
+    @Column(nullable = false, length = 20)
     private String tipo; // BOLETA, FACTURA
+
+    @Column(name = "tipo_doc", nullable = false, length = 20)
+    private String tipoDoc; // DNI, RUC
 
     @Column(columnDefinition = "TEXT")
     private String xml;
