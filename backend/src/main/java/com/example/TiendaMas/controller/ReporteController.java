@@ -44,4 +44,9 @@ public class ReporteController {
     public ResponseEntity<List<com.example.TiendaMas.dto.VentasDiaDTO>> getVentasSemana() {
         return ResponseEntity.ok(reporteService.getVentasSemana());
     }
+
+    @GetMapping("/dashboard/ventas-recientes")
+    public ResponseEntity<List<Venta>> getVentasRecientes(@RequestParam(defaultValue = "5") int limit) {
+        return ResponseEntity.ok(reporteService.getVentasRecientes(limit));
+    }
 }

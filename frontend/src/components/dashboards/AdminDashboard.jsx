@@ -29,29 +29,38 @@ const AdminDashboard = () => {
             const token = localStorage.getItem('token');
             const headers = { Authorization: `Bearer ${token}` };
 
-            // Fetch dashboard stats
-            const statsRes = await axios.get('http://localhost:8080/reportes/dashboard/stats', { headers });
+            try {
+                const statsRes = await axios.get('http://localhost:8080/reportes/dashboard/stats', { headers });
+                setStats(statsRes.data);
+            } catch (e) { console.error('Error loading stats', e); }
 
-            // Fetch top products
-            const topProductsRes = await axios.get('http://localhost:8080/reportes/dashboard/top-productos?limit=5', { headers });
+            try {
+                const topProductsRes = await axios.get('http://localhost:8080/reportes/dashboard/top-productos?limit=5', { headers });
+                setProductosTop(topProductsRes.data.map(p => ({
+                    nombre: p.nombre,
+                    cantidad: p.cantidadVendida
+                })));
+            } catch (e) { console.error('Error loading top products', e); }
 
-            // Fetch weekly sales
-            const weeklySalesRes = await axios.get('http://localhost:8080/reportes/dashboard/ventas-semana', { headers });
+            try {
+                const weeklySalesRes = await axios.get('http://localhost:8080/reportes/dashboard/ventas-semana', { headers });
+                setVentasSemana(weeklySalesRes.data);
+            } catch (e) { console.error('Error loading weekly sales', e); }
 
-            // Fetch low stock inventory
-            const inventoryRes = await axios.get('http://localhost:8080/inventario/sucursal/1', { headers });
-            const lowStock = inventoryRes.data.filter(item => item.cantidad < 10);
+            try {
+                const recentSalesRes = await axios.get('http://localhost:8080/reportes/dashboard/ventas-recientes', { headers });
+                setVentasRecientes(recentSalesRes.data);
+            } catch (e) { console.error('Error loading recent sales', e); }
 
-            setStats(statsRes.data);
-            setVentasSemana(weeklySalesRes.data);
-            setProductosTop(topProductsRes.data.map(p => ({
-                nombre: p.nombre,
-                cantidad: p.cantidadVendida
-            })));
-            setInventarioBajo(lowStock.slice(0, 5));
+            try {
+                const inventoryRes = await axios.get('http://localhost:8080/inventario/sucursal/1', { headers });
+                const lowStock = inventoryRes.data.filter(item => item.cantidad < 10);
+                setInventarioBajo(lowStock.slice(0, 5));
+            } catch (e) { console.error('Error loading inventory', e); }
+
             setLoading(false);
         } catch (error) {
-            console.error('Error fetching dashboard data:', error);
+            console.error('Error in dashboard initialization:', error);
             setLoading(false);
         }
     };
@@ -196,6 +205,60 @@ const AdminDashboard = () => {
                             <Bar dataKey="cantidad" fill="#30348C" name="Unidades Vendidas" />
                         </BarChart>
                     </ResponsiveContainer>
+                </div>
+            </div>
+
+            {/* Recent Sales Table */}
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-bold text-gray-800">Ventas Recientes</h3>
+                    <button
+                        onClick={() => navigate('/reportes')}
+                        className="text-sm text-secondary hover:underline"
+                    >
+                        Ver todas
+                    </button>
+                </div>
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Empleado</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {ventasRecientes.map((venta) => (
+                                <tr key={venta.idVenta}>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{venta.idVenta}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {new Date(venta.fecha).toLocaleString('es-PE')}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {venta.empleado?.nombres || 'N/A'}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-bold">
+                                        S/ {venta.total.toFixed(2)}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            {venta.estado}
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))}
+                            {ventasRecientes.length === 0 && (
+                                <tr>
+                                    <td colSpan="5" className="px-6 py-4 text-center text-sm text-gray-500">
+                                        No hay ventas recientes
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
                 </div>
             </div>
 

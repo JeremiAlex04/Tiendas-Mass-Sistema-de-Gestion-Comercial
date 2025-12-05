@@ -121,6 +121,13 @@ public class ReporteService {
                                 .collect(Collectors.toList());
         }
 
+        public List<Venta> getVentasRecientes(int limit) {
+                return ventaRepository
+                                .findAll(org.springframework.data.domain.PageRequest.of(0, limit,
+                                                org.springframework.data.domain.Sort.by("fecha").descending()))
+                                .getContent();
+        }
+
         public List<VentasDiaDTO> getVentasSemana() {
                 List<VentasDiaDTO> ventasSemana = new ArrayList<>();
                 LocalDate hoy = LocalDate.now();

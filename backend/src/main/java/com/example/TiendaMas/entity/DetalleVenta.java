@@ -19,6 +19,7 @@ public class DetalleVenta {
 
     @ManyToOne
     @JoinColumn(name = "venta_id")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Venta venta;
 
     @ManyToOne
