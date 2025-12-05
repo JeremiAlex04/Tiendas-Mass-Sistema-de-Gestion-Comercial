@@ -122,10 +122,7 @@ public class ReporteService {
         }
 
         public List<Venta> getVentasRecientes(int limit) {
-                return ventaRepository
-                                .findAll(org.springframework.data.domain.PageRequest.of(0, limit,
-                                                org.springframework.data.domain.Sort.by("fecha").descending()))
-                                .getContent();
+                return ventaRepository.findRecentSales(limit);
         }
 
         public List<VentasDiaDTO> getVentasSemana() {
