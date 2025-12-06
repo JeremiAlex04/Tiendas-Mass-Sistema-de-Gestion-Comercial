@@ -35,12 +35,14 @@ public class ReporteService {
         private OrdenCompraRepository ordenCompraRepository;
 
         public List<Venta> getVentasPorPeriodo(LocalDateTime inicio, LocalDateTime fin) {
-                return ventaRepository.findByFechaBetween(inicio, fin);
+                return ventaRepository.findByFechaBetweenWithDetalles(inicio, fin);
         }
 
         public List<Inventario> getReporteStock() {
                 return inventarioRepository.findAll();
         }
+
+        // ... existing code ...
 
         public DashboardStatsDTO getDashboardStats() {
                 DashboardStatsDTO stats = new DashboardStatsDTO();
@@ -119,12 +121,8 @@ public class ReporteService {
         }
 
         public List<Venta> getVentasRecientes(int limit) {
-                return ventaRepository.findAll(
-                                org.springframework.data.domain.PageRequest.of(0, limit,
-                                                org.springframework.data.domain.Sort.by(
-                                                                org.springframework.data.domain.Sort.Direction.DESC,
-                                                                "fecha")))
-                                .getContent();
+                return ventaRepository
+                                .findTop10RecentWithDetalles(org.springframework.data.domain.PageRequest.of(0, limit));
         }
 
         public List<VentasDiaDTO> getVentasSemana() {
