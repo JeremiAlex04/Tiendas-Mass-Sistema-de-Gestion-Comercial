@@ -53,7 +53,7 @@ const AdminDashboard = () => {
             } catch (e) { console.error('Error loading recent sales', e); }
 
             try {
-                const inventoryRes = await axios.get('http://localhost:8080/inventario/sucursal/1', { headers });
+                const inventoryRes = await axios.get('http://localhost:8080/reportes/stock', { headers });
                 const lowStock = inventoryRes.data.filter(item => item.cantidad < 10);
                 setInventarioBajo(lowStock.slice(0, 5));
             } catch (e) { console.error('Error loading inventory', e); }

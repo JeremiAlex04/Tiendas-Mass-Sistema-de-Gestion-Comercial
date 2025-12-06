@@ -91,7 +91,7 @@ public class ReporteService {
                 // Obtener todas las ventas del mes actual
                 LocalDateTime startOfMonth = LocalDateTime.of(LocalDate.now().withDayOfMonth(1), LocalTime.MIN);
                 LocalDateTime now = LocalDateTime.now();
-                List<Venta> ventasMes = ventaRepository.findByFechaBetween(startOfMonth, now);
+                List<Venta> ventasMes = ventaRepository.findByFechaBetweenWithDetalles(startOfMonth, now);
 
                 // Agrupar por producto y sumar cantidades
                 Map<String, ProductoTopDTO> productosMap = new HashMap<>();
