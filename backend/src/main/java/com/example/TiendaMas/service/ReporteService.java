@@ -6,9 +6,6 @@ import com.example.TiendaMas.dto.VentasDiaDTO;
 import com.example.TiendaMas.entity.DetalleVenta;
 import com.example.TiendaMas.entity.Venta;
 import com.example.TiendaMas.entity.Inventario;
-import com.example.TiendaMas.entity.OrdenCompra;
-import com.example.TiendaMas.entity.Empleado;
-import com.example.TiendaMas.entity.Producto;
 import com.example.TiendaMas.repository.VentaRepository;
 import com.example.TiendaMas.repository.EmpleadoRepository;
 import com.example.TiendaMas.repository.InventarioRepository;
@@ -41,7 +38,7 @@ public class ReporteService {
                 return ventaRepository.findByFechaBetween(inicio, fin);
         }
 
-        public List<com.example.TiendaMas.entity.Inventario> getReporteStock() {
+        public List<Inventario> getReporteStock() {
                 return inventarioRepository.findAll();
         }
 
@@ -122,7 +119,12 @@ public class ReporteService {
         }
 
         public List<Venta> getVentasRecientes(int limit) {
-                return ventaRepository.findRecentSales(limit);
+                return ventaRepository.findAll(
+                                org.springframework.data.domain.PageRequest.of(0, limit,
+                                                org.springframework.data.domain.Sort.by(
+                                                                org.springframework.data.domain.Sort.Direction.DESC,
+                                                                "fecha")))
+                                .getContent();
         }
 
         public List<VentasDiaDTO> getVentasSemana() {

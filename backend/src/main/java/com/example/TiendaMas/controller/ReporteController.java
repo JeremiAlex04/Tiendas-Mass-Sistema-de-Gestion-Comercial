@@ -21,7 +21,10 @@ public class ReporteController {
     public ResponseEntity<List<Venta>> getVentas(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fin) {
-        return ResponseEntity.ok(reporteService.getVentasPorPeriodo(inicio, fin));
+        System.out.println("DEBUG: Requesting report from " + inicio + " to " + fin);
+        List<Venta> resultados = reporteService.getVentasPorPeriodo(inicio, fin);
+        System.out.println("DEBUG: Found " + resultados.size() + " sales.");
+        return ResponseEntity.ok(resultados);
     }
 
     @GetMapping("/stock")
@@ -46,7 +49,12 @@ public class ReporteController {
     }
 
     @GetMapping("/dashboard/ventas-recientes")
-    public ResponseEntity<List<Venta>> getVentasRecientes(@RequestParam(defaultValue = "5") int limit) {
-        return ResponseEntity.ok(reporteService.getVentasRecientes(limit));
+    public ResponseEntity<?> getVentasRecientes(@RequestParam(defaultValue = "5") int limit) {
+        try {
+            return ResponseEntity.ok(reporteService.getVentasRecientes(limit));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
     }
 }

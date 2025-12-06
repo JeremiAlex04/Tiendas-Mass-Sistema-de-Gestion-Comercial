@@ -10,6 +10,4 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
 
     List<Venta> findByEmpleado_IdEmpleado(Long empleadoId);
 
-    @org.springframework.data.jpa.repository.Query(value = "SELECT * FROM venta ORDER BY fecha DESC LIMIT :limit", nativeQuery = true)
-    List<Venta> findRecentSales(@org.springframework.data.repository.query.Param("limit") int limit);
 }

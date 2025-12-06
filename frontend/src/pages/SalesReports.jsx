@@ -7,33 +7,52 @@ const SalesReports = () => {
     const [endDate, setEndDate] = useState('');
     const [sales, setSales] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [searched, setSearched] = useState(false);
 
     const fetchSales = async () => {
         if (!startDate || !endDate) return;
         setLoading(true);
+        setSearched(true); // Marcar que se ha realizado una búsqueda
         try {
             const token = localStorage.getItem('token');
-            // Adjust dates to cover full days
-            const start = new Date(startDate);
+            // Adjust dates to cover full days in LOCAL time
+            // Create dates treating "YYYY-MM-DD" as local date
+            const createLocalDate = (dateStr) => {
+                const [year, month, day] = dateStr.split('-').map(Number);
+                return new Date(year, month - 1, day);
+            };
+
+            const start = createLocalDate(startDate);
             start.setHours(0, 0, 0, 0);
 
-            const end = new Date(endDate);
+            const end = createLocalDate(endDate);
             end.setHours(23, 59, 59, 999);
+
+            // Format as YYYY-MM-DDTHH:mm:ss for Spring Boot LocalDateTime
+            const formatLocalISO = (date) => {
+                const pad = (n) => n.toString().padStart(2, '0');
+                const yyyy = date.getFullYear();
+                const MM = pad(date.getMonth() + 1);
+                const dd = pad(date.getDate());
+                const hh = pad(date.getHours());
+                const mm = pad(date.getMinutes());
+                const ss = pad(date.getSeconds());
+                return `${yyyy}-${MM}-${dd}T${hh}:${mm}:${ss}`;
+            };
 
             const response = await axios.get(`http://localhost:8080/reportes/ventas`, {
                 params: {
-                    inicio: start.toISOString(),
-                    fin: end.toISOString()
+                    inicio: formatLocalISO(start),
+                    fin: formatLocalISO(end)
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
             setSales(response.data);
-            setLoading(false);
         } catch (error) {
             console.error(error);
-            setLoading(false);
-            // Removed mock data to ensure real data usage
             setSales([]);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -87,7 +106,7 @@ const SalesReports = () => {
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {sales.map((venta) => (
+                        {Array.isArray(sales) && sales.map((venta) => (
                             <tr key={venta.idVenta} className="hover:bg-gray-50 transition-colors">
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{venta.idVenta}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -106,7 +125,7 @@ const SalesReports = () => {
                         {sales.length === 0 && !loading && (
                             <tr>
                                 <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
-                                    Selecciona un rango de fechas para generar el reporte.
+                                    {searched ? 'No se encontraron ventas en el rango de fechas seleccionado.' : 'Selecciona un rango de fechas para generar el reporte.'}
                                 </td>
                             </tr>
                         )}
