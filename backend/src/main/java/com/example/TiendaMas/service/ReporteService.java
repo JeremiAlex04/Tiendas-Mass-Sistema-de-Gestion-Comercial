@@ -154,4 +154,24 @@ public class ReporteService {
 
                 return ventasSemana;
         }
+
+        public DashboardStatsDTO getCajeroStats(Long usuarioId) {
+                DashboardStatsDTO stats = new DashboardStatsDTO();
+                LocalDateTime startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+                LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+
+                // Sales for this specific employee today
+                List<Venta> ventasHoy = ventaRepository.findByFechaBetween(startOfDay, endOfDay).stream()
+                                .filter(v -> v.getEmpleado().getIdEmpleado().equals(usuarioId))
+                                .collect(Collectors.toList());
+
+                Double totalHoy = ventasHoy.stream()
+                                .mapToDouble(v -> v.getTotal().doubleValue())
+                                .sum();
+
+                stats.setVentasHoy(totalHoy);
+                stats.setTransaccionesHoy(ventasHoy.size());
+                // Other fields can remain 0/null
+                return stats;
+        }
 }

@@ -57,4 +57,14 @@ public class ReporteController {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
+
+    @GetMapping("/dashboard/cajero")
+    public ResponseEntity<?> getCajeroStats(@RequestParam Long usuarioId) {
+        try {
+            return ResponseEntity.ok(reporteService.getCajeroStats(usuarioId));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
 }

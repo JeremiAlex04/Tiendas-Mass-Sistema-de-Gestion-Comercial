@@ -10,4 +10,7 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
 
     List<Venta> findByEmpleado_IdEmpleado(Long empleadoId);
 
+    @org.springframework.data.jpa.repository.Query("SELECT DISTINCT v FROM Venta v LEFT JOIN FETCH v.detalles WHERE v.empleado.idEmpleado = :empleadoId")
+    List<Venta> findVentasPorEmpleadoWithDetalles(
+            @org.springframework.web.bind.annotation.RequestParam("empleadoId") Long empleadoId);
 }

@@ -104,4 +104,11 @@ public class VentaService {
 
                 return venta;
         }
+
+        public java.util.List<Venta> getVentasPorEmpleado(String username) {
+                Empleado empleado = empleadoRepository.findByUsuario(username)
+                                .orElseThrow(() -> new RuntimeException(
+                                                "Empleado no encontrado para el usuario: " + username));
+                return ventaRepository.findVentasPorEmpleadoWithDetalles(empleado.getIdEmpleado());
+        }
 }

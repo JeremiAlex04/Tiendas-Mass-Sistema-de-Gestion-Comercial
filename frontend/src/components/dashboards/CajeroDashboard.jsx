@@ -1,8 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, RotateCcw, FileText } from 'lucide-react';
+import axios from 'axios';
+import useAuthStore from '../../store/authStore';
 
 const CajeroDashboard = () => {
+    const { user } = useAuthStore();
+    const [stats, setStats] = useState({ ventasHoy: 0, transaccionesHoy: 0 });
+
+    useEffect(() => {
+        if (user && user.idUsuario) {
+            fetchStats();
+        }
+    }, [user]);
+
+    const fetchStats = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`http://localhost:8080/reportes/dashboard/cajero?usuarioId=${user.idUsuario}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setStats(response.data);
+        } catch (error) {
+            console.error("Error fetching cashier stats:", error);
+        }
+    };
+
     return (
         <div>
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Panel de Caja</h2>
@@ -28,15 +51,15 @@ const CajeroDashboard = () => {
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-lg font-bold text-gray-800 mb-4">Resumen de Hoy</h3>
+                <h3 className="text-lg font-bold text-gray-800 mb-4">Resumen de Hoy ({user?.username})</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="p-4 bg-gray-50 rounded border">
                         <p className="text-sm text-gray-500">Ventas Realizadas</p>
-                        <p className="text-2xl font-bold text-gray-800">0</p>
+                        <p className="text-2xl font-bold text-gray-800">{stats.transaccionesHoy}</p>
                     </div>
                     <div className="p-4 bg-gray-50 rounded border">
                         <p className="text-sm text-gray-500">Total Recaudado</p>
-                        <p className="text-2xl font-bold text-green-600">S/ 0.00</p>
+                        <p className="text-2xl font-bold text-green-600">S/ {(stats.ventasHoy || 0).toFixed(2)}</p>
                     </div>
                 </div>
             </div>

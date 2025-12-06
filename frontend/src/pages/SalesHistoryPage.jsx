@@ -17,16 +17,16 @@ const SalesHistoryPage = () => {
     const fetchSales = async () => {
         try {
             const token = localStorage.getItem('token');
-            // If Admin, maybe show all? But this page is specifically "My Sales" for Cajero usually.
-            // Admin has Reports page.
-            const response = await axios.get(`http://localhost:8080/ventas/mis-ventas?usuarioId=${user.idUsuario}`, {
+            // Call without params, backend extracts user from token
+            const response = await axios.get(`http://localhost:8080/ventas/mis-ventas`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setSales(response.data);
             setLoading(false);
         } catch (error) {
-            console.error(error);
-            addNotification('Error al cargar historial de ventas', 'error');
+            console.error("Error fetching sales history:", error);
+            const msg = error.response?.data?.message || error.response?.data || error.message || 'Error desconocido';
+            addNotification(`Error al cargar historial: ${msg}`, 'error');
             setLoading(false);
         }
     };

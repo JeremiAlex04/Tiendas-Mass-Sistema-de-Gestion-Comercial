@@ -29,7 +29,18 @@ public class VentaController {
     }
 
     @GetMapping("/mis-ventas")
-    public List<Venta> getMisVentas(@RequestParam Long usuarioId) {
-        return ventaRepository.findByEmpleado_IdEmpleado(usuarioId);
+    public ResponseEntity<?> getMisVentas(org.springframework.security.core.Authentication authentication) {
+        try {
+            String username = authentication.getName();
+            // Assuming we have a repository to find Empleado by their associated Usuario's
+            // username
+            // or if the Empleado entity has the username directly.
+            // Based on Empleado entity: private String usuario; (unique)
+            // We need to inject EmpleadoRepository here to find it.
+            return ResponseEntity.ok(ventaService.getVentasPorEmpleado(username));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
     }
 }
