@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Calendar, Download } from 'lucide-react';
+import { generateExcelReport } from '../utils/excelExporter';
 
 const SalesReports = () => {
     const [startDate, setStartDate] = useState('');
@@ -56,6 +57,40 @@ const SalesReports = () => {
         }
     };
 
+    const handleExport = () => {
+        if (!sales || sales.length === 0) {
+            alert('No hay datos para exportar. Por favor genere el reporte primero.');
+            return;
+        }
+
+        const columns = [
+            { header: 'ID Venta', key: 'idVenta', width: 10 },
+            { header: 'Fecha', key: 'fechaFormatted', width: 25 },
+            { header: 'Método Pago', key: 'metodoPago', width: 20 },
+            { header: 'Total (S/)', key: 'total', width: 15 },
+            { header: 'Estado', key: 'estado', width: 15 },
+            { header: 'Cajero', key: 'cajero', width: 30 }
+        ];
+
+        // Process data for export
+        const exportData = sales.map(s => ({
+            idVenta: s.idVenta,
+            fechaFormatted: new Date(s.fecha).toLocaleString('es-PE'),
+            metodoPago: s.metodoPago,
+            total: s.total.toFixed(2),
+            estado: s.estado,
+            cajero: s.empleado ? `${s.empleado.nombres} ${s.empleado.apellidos}` : 'N/A'
+        }));
+
+        generateExcelReport({
+            title: 'REPORTE DE VENTAS - TIENDA MASS',
+            subtitle: `Desde: ${startDate} Hasta: ${endDate}`,
+            columns: columns,
+            data: exportData,
+            filename: `Ventas_${startDate}_${endDate}.xlsx`
+        });
+    };
+
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-bold text-gray-800">Reporte de Ventas</h1>
@@ -87,7 +122,10 @@ const SalesReports = () => {
                         <Calendar className="w-5 h-5 mr-2" />
                         Generar Reporte
                     </button>
-                    <button className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center ml-auto shadow-sm">
+                    <button
+                        onClick={handleExport}
+                        className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center ml-auto shadow-sm"
+                    >
                         <Download className="w-5 h-5 mr-2" />
                         Exportar Excel
                     </button>

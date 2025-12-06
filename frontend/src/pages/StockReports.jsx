@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Package, AlertTriangle, CheckCircle, Download } from 'lucide-react';
+import { generateExcelReport } from '../utils/excelExporter';
 
 const StockReports = () => {
     const [inventory, setInventory] = useState([]);
@@ -22,6 +23,40 @@ const StockReports = () => {
             console.error(error);
             setLoading(false);
         }
+    };
+
+    const handleExport = () => {
+        if (!inventory || inventory.length === 0) {
+            alert('No hay datos de stock para exportar.');
+            return;
+        }
+
+        const columns = [
+            { header: 'ID', key: 'idInventario', width: 10 },
+            { header: 'Producto', key: 'productoNombre', width: 30 },
+            { header: 'Código Barras', key: 'codigoBarras', width: 15 },
+            { header: 'Sucursal', key: 'sucursal', width: 20 },
+            { header: 'Cantidad', key: 'cantidad', width: 15 },
+            { header: 'Estado Stock', key: 'estadoStock', width: 15 }
+        ];
+
+        // Process data
+        const exportData = inventory.map(item => ({
+            idInventario: item.idInventario,
+            productoNombre: item.producto.nombre,
+            codigoBarras: item.producto.codigoBarras,
+            sucursal: item.sucursal.nombre,
+            cantidad: item.cantidad,
+            estadoStock: item.cantidad <= item.producto.stockMinimo ? 'BAJO STOCK' : 'NORMAL'
+        }));
+
+        generateExcelReport({
+            title: 'REPORTE DE STOCK - TIENDA MASS',
+            subtitle: `Generado el: ${new Date().toLocaleString('es-PE')}`,
+            columns: columns,
+            data: exportData,
+            filename: 'Reporte_Stock.xlsx'
+        });
     };
 
     return (
@@ -47,7 +82,10 @@ const StockReports = () => {
                         </div>
                     </div>
                 </div>
-                <button className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center shadow-sm">
+                <button
+                    onClick={handleExport}
+                    className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center shadow-sm"
+                >
                     <Download className="w-5 h-5 mr-2" />
                     Exportar Excel
                 </button>
