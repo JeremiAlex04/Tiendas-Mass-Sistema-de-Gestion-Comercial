@@ -80,7 +80,8 @@ public class ReporteService {
 
                 // Órdenes pendientes
                 long ordenesPendientes = ordenCompraRepository.findAll().stream()
-                                .filter(orden -> "PENDIENTE".equalsIgnoreCase(orden.getEstado()))
+                                .filter(orden -> "PENDIENTE".equalsIgnoreCase(orden.getEstado())
+                                                || "GENERADA".equalsIgnoreCase(orden.getEstado()))
                                 .count();
                 stats.setOrdenesPendientes((int) ordenesPendientes);
 

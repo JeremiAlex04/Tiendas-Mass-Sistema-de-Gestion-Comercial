@@ -45,7 +45,7 @@ public class OrdenCompraService {
                 OrdenCompra orden = new OrdenCompra();
                 orden.setProveedor(proveedor);
                 orden.setEmpleado(empleado);
-                orden.setEstado("GENERADA");
+                orden.setEstado("PENDIENTE");
 
                 orden = ordenCompraRepository.save(orden);
 
