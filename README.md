@@ -75,6 +75,19 @@ npm run dev
 ```
 La aplicación abrirá en `http://localhost:5173`.
 
+## 🧪 Pruebas Unitarias
+
+El proyecto incluye pruebas unitarias para validar la lógica de negocio crítica (Servicios).
+
+### Ejecutar Tests
+```bash
+cd backend
+./mvnw test
+```
+Esto ejecutará los tests definidos en `src/test/java`, incluyendo:
+*   `VentaServiceTest`: Valida el flujo de ventas, cálculo de totales y descuento de stock.
+*   `ProductoServiceTest`: Valida el CRUD de productos.
+
 ## 🔑 Credenciales por Defecto
 
 El sistema inicializa los siguientes usuarios para pruebas:
