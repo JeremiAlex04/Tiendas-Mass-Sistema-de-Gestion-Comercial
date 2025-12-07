@@ -42,8 +42,6 @@ public class ReporteService {
                 return inventarioRepository.findAll();
         }
 
-        // ... existing code ...
-
         public DashboardStatsDTO getDashboardStats() {
                 DashboardStatsDTO stats = new DashboardStatsDTO();
 
@@ -159,7 +157,6 @@ public class ReporteService {
                 LocalDateTime startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
                 LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
 
-                // Sales for this specific employee today
                 List<Venta> ventasHoy = ventaRepository.findByFechaBetween(startOfDay, endOfDay).stream()
                                 .filter(v -> v.getEmpleado().getIdEmpleado().equals(usuarioId))
                                 .collect(Collectors.toList());
@@ -170,7 +167,6 @@ public class ReporteService {
 
                 stats.setVentasHoy(totalHoy);
                 stats.setTransaccionesHoy(ventasHoy.size());
-                // Other fields can remain 0/null
                 return stats;
         }
 }

@@ -17,7 +17,6 @@ const SalesHistoryPage = () => {
     const fetchSales = async () => {
         try {
             const token = localStorage.getItem('token');
-            // Call without params, backend extracts user from token
             const response = await axios.get(`http://localhost:8080/ventas/mis-ventas`, {
                 headers: { Authorization: `Bearer ${token}` }
             });

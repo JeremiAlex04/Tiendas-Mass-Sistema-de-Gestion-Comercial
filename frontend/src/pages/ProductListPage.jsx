@@ -53,7 +53,6 @@ const ProductListPage = () => {
             precioVenta: product.precioVenta,
             precioCompra: product.precioCompra,
             stockMinimo: product.stockMinimo,
-            // Use DTO fields (categoriaId/proveedorId) or fallback to nested objects if legacy
             categoriaId: product.categoriaId || product.categoria?.idCategoria || '',
             proveedorId: product.proveedorId || product.proveedor?.idProveedor || ''
         });

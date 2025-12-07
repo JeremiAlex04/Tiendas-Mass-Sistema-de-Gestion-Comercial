@@ -72,11 +72,11 @@ const UsersPage = () => {
             const payload = {
                 usuario: formData.username,
                 password: formData.passwordHash,
-                nombres: formData.nombres, // Note: Empleado entity doesn't have nombres/apellidos/email/estado, so these will be ignored by backend unless added to entity.
-                apellidos: formData.apellidos, // Assuming we only care about auth fields for now or will add them later.
+                nombres: formData.nombres,
+                apellidos: formData.apellidos,
                 email: formData.email,
                 rol: formData.role,
-                sucursal: { idSucursal: user.sucursalId || 1 }, // Dynamic branch assignment
+                sucursal: { idSucursal: user.sucursalId || 1 },
                 fechaIngreso: new Date().toISOString().split('T')[0]
             };
 

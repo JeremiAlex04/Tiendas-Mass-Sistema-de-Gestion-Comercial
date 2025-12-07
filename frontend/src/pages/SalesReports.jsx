@@ -13,11 +13,9 @@ const SalesReports = () => {
     const fetchSales = async () => {
         if (!startDate || !endDate) return;
         setLoading(true);
-        setSearched(true); // Marcar que se ha realizado una búsqueda
+        setSearched(true);
         try {
             const token = localStorage.getItem('token');
-            // Adjust dates to cover full days in LOCAL time
-            // Create dates treating "YYYY-MM-DD" as local date
             const createLocalDate = (dateStr) => {
                 const [year, month, day] = dateStr.split('-').map(Number);
                 return new Date(year, month - 1, day);
@@ -29,7 +27,6 @@ const SalesReports = () => {
             const end = createLocalDate(endDate);
             end.setHours(23, 59, 59, 999);
 
-            // Format as YYYY-MM-DDTHH:mm:ss for Spring Boot LocalDateTime
             const formatLocalISO = (date) => {
                 const pad = (n) => n.toString().padStart(2, '0');
                 const yyyy = date.getFullYear();

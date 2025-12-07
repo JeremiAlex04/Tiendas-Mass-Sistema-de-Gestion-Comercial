@@ -67,7 +67,6 @@ public class InventarioService {
         inventario.setCantidad(nuevoStock);
         inventarioRepository.save(inventario);
 
-        // Registrar Kardex
         Kardex kardex = new Kardex();
         kardex.setProducto(producto);
         kardex.setSucursal(sucursal);
@@ -80,7 +79,6 @@ public class InventarioService {
         kardex.setReferencia(referencia);
         kardexRepository.save(kardex);
 
-        // Registrar Auditoria
         if (empleado != null) {
             auditoriaService.registrarAccion("AJUSTE_STOCK", "PRODUCTO-" + producto.getIdProducto(), empleado,
                     "INVENTARIO");
@@ -104,7 +102,6 @@ public class InventarioService {
         ajustarStock(producto, sucursal, cantidad, tipoMovimiento, motivo, empleado);
     }
 
-    // Keep old method for compatibility if needed, or just update callers
     @Transactional
     public void registrarMovimiento(Long productoId, Long sucursalId, String tipoMovimiento, int cantidad,
             String motivo) {

@@ -7,7 +7,6 @@ const useNotificationStore = create((set) => ({
         set((state) => ({
             notifications: [...state.notifications, { id, message, type }]
         }));
-        // Auto remove after 3 seconds
         setTimeout(() => {
             set((state) => ({
                 notifications: state.notifications.filter((n) => n.id !== id)

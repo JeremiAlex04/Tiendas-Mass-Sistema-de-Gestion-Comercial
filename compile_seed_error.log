@@ -1,0 +1,23 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.example:TiendaMas >------------------------
+[INFO] Building TiendaMas 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ TiendaMas ---
+[INFO] Deleting C:\Users\Jeremi Alexander\Desktop\TiendaMass-AYDSI\backend\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ TiendaMas ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ TiendaMas ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 66 source files with javac [debug parameters release 17] to target\classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  14.822 s
+[INFO] Finished at: 2025-12-06T19:38:00-05:00
+[INFO] ------------------------------------------------------------------------

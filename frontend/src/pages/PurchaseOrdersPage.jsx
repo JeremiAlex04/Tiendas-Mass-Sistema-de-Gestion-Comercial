@@ -11,9 +11,8 @@ const PurchaseOrdersPage = () => {
     const { user } = useAuthStore();
     const [formData, setFormData] = useState({
         proveedorId: '',
-        detalles: [] // Simplified for now, just creating empty order or basic logic
+        detalles: []
     });
-    // Mock products for selection in modal
     const [products, setProducts] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
 
@@ -40,7 +39,6 @@ const PurchaseOrdersPage = () => {
     };
 
     const fetchSuppliers = async () => {
-        // Fetch suppliers logic
         try {
             const token = localStorage.getItem('token');
             const response = await axios.get('http://localhost:8080/proveedores', { headers: { Authorization: `Bearer ${token}` } });
@@ -49,7 +47,6 @@ const PurchaseOrdersPage = () => {
     };
 
     const fetchProducts = async () => {
-        // Fetch products logic
         try {
             const token = localStorage.getItem('token');
             const response = await axios.get('http://localhost:8080/productos', { headers: { Authorization: `Bearer ${token}` } });

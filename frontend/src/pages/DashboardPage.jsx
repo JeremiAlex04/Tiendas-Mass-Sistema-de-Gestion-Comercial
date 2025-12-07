@@ -15,7 +15,6 @@ const DashboardPage = () => {
             {user.role === 'CAJERO' && <CajeroDashboard />}
             {user.role === 'ALMACENERO' && <AlmaceneroDashboard />}
 
-            {/* Fallback if role is unknown or not handled */}
             {!['ADMINISTRADOR', 'CAJERO', 'ALMACENERO'].includes(user.role) && (
                 <div className="text-center py-10">
                     <h2 className="text-xl font-bold text-gray-700">Bienvenido, {user.username}</h2>

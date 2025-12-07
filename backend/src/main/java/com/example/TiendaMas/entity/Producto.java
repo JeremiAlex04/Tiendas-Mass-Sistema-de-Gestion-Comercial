@@ -46,7 +46,6 @@ public class Producto {
     @JoinColumn(name = "proveedor_id")
     private Proveedor proveedor;
 
-    // Legacy field mapping to satisfy existing database schema
     @Column(name = "sku", length = 50)
     private String sku;
 

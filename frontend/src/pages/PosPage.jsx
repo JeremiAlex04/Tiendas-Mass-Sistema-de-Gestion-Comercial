@@ -42,7 +42,6 @@ const PosPage = () => {
     const [showReceipt, setShowReceipt] = useState(false);
     const [lastSale, setLastSale] = useState(null);
 
-    // Cash Management State
     const [cajaAbierta, setCajaAbierta] = useState(false);
     const [showOpenCaja, setShowOpenCaja] = useState(false);
     const [showCloseCaja, setShowCloseCaja] = useState(false);
@@ -67,7 +66,7 @@ const PosPage = () => {
                 setCajaDetails(response.data);
             } else {
                 setCajaAbierta(false);
-                // setShowOpenCaja(true); // Don't auto-force. Let user click 'Open' or try to sell.
+                // setShowOpenCaja(true);
             }
         } catch (error) {
             console.error('Error checking caja status:', error);
@@ -112,7 +111,6 @@ const PosPage = () => {
             setCajaAbierta(false);
             setShowCloseCaja(false);
             setCajaDetails(null);
-            // Optionally redirect or show summary
         } catch (error) {
             console.error(error);
             addNotification('Error al cerrar la caja', 'error');
@@ -136,8 +134,8 @@ const PosPage = () => {
             const token = localStorage.getItem('token');
             const saleData = {
                 usuarioId: user.idUsuario,
-                sucursalId: user.sucursalId || 1, // Use login sucursal or fallback
-                idCliente: null, // Explicitly sending null for anonymous client
+                sucursalId: user.sucursalId || 1,
+                idCliente: null,
                 metodoPago: 'EFECTIVO',
                 tipoComprobante: 'BOLETA',
                 detalles: cart.map(item => ({
@@ -152,13 +150,12 @@ const PosPage = () => {
 
             setLastSale({
                 ...response.data,
-                items: [...cart], // Keep cart items for the receipt
+                items: [...cart],
                 total: getTotal()
             });
             setShowReceipt(true);
             addNotification('Venta realizada con éxito!', 'success');
-            fetchProducts(); // Refresh stock
-            // Don't clear cart yet, wait for receipt close
+            fetchProducts();
         } catch (error) {
             console.error('Error processing sale:', error);
             let msg = 'Error al procesar la venta';
@@ -187,7 +184,6 @@ const PosPage = () => {
 
     return (
         <div className="flex h-full gap-6 relative">
-            {/* Open Caja Modal */}
             {showOpenCaja && (
                 <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
                     <div className="bg-white p-8 rounded-lg shadow-xl w-96">
@@ -221,7 +217,6 @@ const PosPage = () => {
                 </div>
             )}
 
-            {/* Close Caja Modal */}
             {showCloseCaja && (
                 <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
                     <div className="bg-white p-8 rounded-lg shadow-xl w-96">
@@ -255,7 +250,6 @@ const PosPage = () => {
                 </div>
             )}
 
-            {/* Receipt Modal */}
             {showReceipt && lastSale && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 print:bg-white print:inset-0 print:absolute print:items-start print:justify-start">
                     <div className="bg-white p-8 rounded-lg shadow-xl w-96 max-h-[90vh] overflow-y-auto print:shadow-none print:w-full print:h-auto print:overflow-visible">
@@ -313,7 +307,6 @@ const PosPage = () => {
                 </div>
             )}
 
-            {/* Product List */}
             <div className="flex-1 flex flex-col">
                 <div className="mb-4 flex gap-4 items-center">
                     <div className="relative flex-1">

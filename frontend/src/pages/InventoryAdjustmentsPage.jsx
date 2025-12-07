@@ -8,7 +8,7 @@ const InventoryAdjustmentsPage = () => {
     const [products, setProducts] = useState([]);
     const [formData, setFormData] = useState({
         productoId: '',
-        sucursalId: user?.sucursalId || 1, // Dynamic sucusal with fallback
+        sucursalId: user?.sucursalId || 1,
         tipoMovimiento: 'ENTRADA',
         cantidad: 0,
         motivo: ''
@@ -78,7 +78,6 @@ const InventoryAdjustmentsPage = () => {
                         </select>
                     </div>
 
-                    {/* Sucursal ID hidden or read-only if single branch */}
                     <div className="hidden">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Sucursal ID</label>
                         <input
