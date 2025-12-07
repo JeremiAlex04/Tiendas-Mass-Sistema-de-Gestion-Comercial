@@ -5,6 +5,9 @@ import useAuthStore from '../store/authStore';
 import useNotificationStore from '../store/notificationStore';
 
 const InventoryAdjustmentsPage = () => {
+    const { user } = useAuthStore();
+    const { addNotification } = useNotificationStore();
+
     const [products, setProducts] = useState([]);
     const [formData, setFormData] = useState({
         productoId: '',
@@ -13,9 +16,6 @@ const InventoryAdjustmentsPage = () => {
         cantidad: 0,
         motivo: ''
     });
-
-    const { user } = useAuthStore();
-    const { addNotification } = useNotificationStore();
 
     useEffect(() => {
         if (user?.sucursalId) {

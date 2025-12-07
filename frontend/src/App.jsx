@@ -49,14 +49,15 @@ function App() {
               <Route path="/categorias" element={<CategoriesPage />} />
               <Route path="/inventario" element={<InventoryPage />} />
               <Route path="/reportes-stock" element={<StockReports />} />
+              <Route path="/ordenes" element={<PurchaseOrdersPage />} />
+              <Route path="/ajustes" element={<InventoryAdjustmentsPage />} />
             </Route>
 
             <Route element={<ProtectedRoute allowedRoles={['ADMINISTRADOR']} />}>
               <Route path="/usuarios" element={<UsersPage />} />
               <Route path="/reportes" element={<ReportsPage />} />
               <Route path="/proveedores" element={<SuppliersPage />} />
-              <Route path="/ordenes" element={<PurchaseOrdersPage />} />
-              <Route path="/ajustes" element={<InventoryAdjustmentsPage />} />
+
             </Route>
           </Route>
         </Route>
