@@ -108,4 +108,26 @@ El sistema inicializa los siguientes usuarios para pruebas:
     *   `src/store`: Gestión de estado global (Auth, Notifications).
 
 ---
-Desarrollado para Tienda Mass - 2025.
+
+## 🚀 Guía de Despliegue (Producción)
+
+### Preparar Backend (JAR)
+Genera el ejecutable optimizado de Spring Boot:
+```bash
+cd backend
+./mvnw clean package -DskipTests
+# El archivo .jar se generará en backend/target/TiendaMas-0.0.1-SNAPSHOT.jar
+```
+Para ejecutar en producción:
+```bash
+java -jar target/TiendaMas-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+```
+
+### Preparar Frontend (Static Build)
+Genera los archivos estáticos optimizados para producción:
+```bash
+cd frontend
+npm run build
+# Los archivos se generarán en la carpeta frontend/dist
+```
+Estos archivos deben servirse con un servidor web como Nginx, Apache, o integrarse dentro del directorio `static` de Spring Boot.
