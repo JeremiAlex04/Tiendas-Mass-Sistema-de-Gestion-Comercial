@@ -35,7 +35,7 @@ const PosPage = () => {
     const filteredProducts = products.filter(p => {
         const matchesSearch = p.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
             p.codigoBarras.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = selectedCategory ? p.categoria?.idCategoria === parseInt(selectedCategory) : true;
+        const matchesCategory = selectedCategory ? (p.categoriaId === parseInt(selectedCategory) || p.categoria?.idCategoria === parseInt(selectedCategory)) : true;
         return matchesSearch && matchesCategory;
     });
 

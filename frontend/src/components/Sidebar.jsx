@@ -11,7 +11,7 @@ const Sidebar = () => {
     const navItems = [
         { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', roles: ['ADMINISTRADOR', 'CAJERO', 'ALMACENERO'] },
         { path: '/pos', icon: ShoppingCart, label: 'Punto de Venta', roles: ['ADMINISTRADOR', 'CAJERO'] },
-        { path: '/mis-ventas', icon: FileText, label: 'Mis Ventas', roles: ['CAJERO'] },
+        { path: '/mis-ventas', icon: FileText, label: 'Mis Ventas', roles: ['ADMINISTRADOR', 'CAJERO'] },
         { path: '/productos', icon: Package, label: 'Productos', roles: ['ADMINISTRADOR', 'ALMACENERO'] },
         { path: '/categorias', icon: Tag, label: 'Categorías', roles: ['ADMINISTRADOR', 'ALMACENERO'] },
         { path: '/inventario', icon: Package, label: 'Inventario', roles: ['ADMINISTRADOR', 'ALMACENERO'] },
@@ -19,7 +19,8 @@ const Sidebar = () => {
         { path: '/usuarios', icon: Users, label: 'Usuarios', roles: ['ADMINISTRADOR'] },
         { path: '/proveedores', icon: Users, label: 'Proveedores', roles: ['ADMINISTRADOR', 'ALMACENERO'] },
         { path: '/ordenes', icon: FileText, label: 'Órdenes Compra', roles: ['ADMINISTRADOR', 'ALMACENERO'] },
-        { path: '/reportes', icon: FileText, label: 'Reportes', roles: ['ADMINISTRADOR'] },
+        { path: '/reportes-stock', icon: Tag, label: 'Reportes Stock', roles: ['ADMINISTRADOR', 'ALMACENERO'] },
+        { path: '/reportes', icon: FileText, label: 'Reportes Grales.', roles: ['ADMINISTRADOR'] },
     ];
 
     const filteredNavItems = navItems.filter(item => item.roles.includes(user?.role));
