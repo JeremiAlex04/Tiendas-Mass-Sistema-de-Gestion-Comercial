@@ -58,14 +58,7 @@ public class CajaService {
         Caja caja = cajaRepository.findByEmpleado_IdEmpleadoAndEstado(empleadoId, "ABIERTA")
                 .orElseThrow(() -> new RuntimeException("No hay una caja abierta para este empleado."));
 
-        // Calcular ventas del día para este empleado desde la apertura
-        List<Venta> ventas = ventaRepository.findByEmpleado_IdEmpleado(empleadoId);
-
-        // Filtrar ventas realizadas DESPUÉS de la apertura de caja
-        BigDecimal totalVentas = ventas.stream()
-                .filter(v -> v.getFecha().isAfter(caja.getFechaApertura()))
-                .map(Venta::getTotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal totalVentas = calcularVentasTurno(caja);
 
         BigDecimal montoSistema = caja.getMontoInicial().add(totalVentas);
         BigDecimal diferencia = montoFinal.subtract(montoSistema);
@@ -81,5 +74,12 @@ public class CajaService {
 
     public Optional<Caja> obtenerCajaAbierta(Long empleadoId) {
         return cajaRepository.findByEmpleado_IdEmpleadoAndEstado(empleadoId, "ABIERTA");
+    }
+    public java.math.BigDecimal calcularVentasTurno(Caja caja) {
+        List<Venta> ventas = ventaRepository.findByEmpleado_IdEmpleado(caja.getEmpleado().getIdEmpleado());
+        return ventas.stream()
+                .filter(v -> v.getFecha().isAfter(caja.getFechaApertura()))
+                .map(Venta::getTotal)
+                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
     }
 }

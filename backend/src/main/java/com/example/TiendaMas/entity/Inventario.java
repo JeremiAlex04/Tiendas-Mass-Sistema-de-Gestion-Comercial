@@ -31,4 +31,11 @@ public class Inventario {
 
     @Column(length = 100)
     private String ubicacion;
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.ubicacion == null || this.ubicacion.isEmpty()) {
+            this.ubicacion = "Almacén General";
+        }
+    }
 }

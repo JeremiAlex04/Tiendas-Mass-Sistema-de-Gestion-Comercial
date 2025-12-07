@@ -76,7 +76,7 @@ const UsersPage = () => {
                 apellidos: formData.apellidos, // Assuming we only care about auth fields for now or will add them later.
                 email: formData.email,
                 rol: formData.role,
-                sucursal: { idSucursal: 1 }, // Default branch
+                sucursal: { idSucursal: user.sucursalId || 1 }, // Dynamic branch assignment
                 fechaIngreso: new Date().toISOString().split('T')[0]
             };
 

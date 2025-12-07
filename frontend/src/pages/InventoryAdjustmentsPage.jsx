@@ -8,7 +8,7 @@ const InventoryAdjustmentsPage = () => {
     const [products, setProducts] = useState([]);
     const [formData, setFormData] = useState({
         productoId: '',
-        sucursalId: 1, // Default to main branch for now
+        sucursalId: user?.sucursalId || 1, // Dynamic sucusal with fallback
         tipoMovimiento: 'ENTRADA',
         cantidad: 0,
         motivo: ''
@@ -16,6 +16,12 @@ const InventoryAdjustmentsPage = () => {
 
     const { user } = useAuthStore();
     const { addNotification } = useNotificationStore();
+
+    useEffect(() => {
+        if (user?.sucursalId) {
+            setFormData(prev => ({ ...prev, sucursalId: user.sucursalId }));
+        }
+    }, [user]);
 
     useEffect(() => {
         const fetchProducts = async () => {

@@ -44,5 +44,8 @@ public class Comprobante {
     @PrePersist
     protected void onCreate() {
         fechaEmision = LocalDateTime.now();
+        if (this.xml == null) {
+            this.xml = "SIMULACION_SUNAT_XML";
+        }
     }
 }

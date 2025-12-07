@@ -115,11 +115,30 @@ public class ProductoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> update(@PathVariable Long id, @RequestBody Producto producto) {
+    public ResponseEntity<Producto> update(@PathVariable Long id,
+            @RequestBody com.example.TiendaMas.dto.ProductoDTO productoDTO) {
         return productoService.findById(id)
                 .map(existing -> {
-                    producto.setIdProducto(id);
-                    return ResponseEntity.ok(productoService.save(producto));
+                    existing.setCodigoBarras(productoDTO.getCodigoBarras());
+                    existing.setNombre(productoDTO.getNombre());
+                    existing.setDescripcion(productoDTO.getDescripcion());
+                    existing.setPrecioVenta(productoDTO.getPrecioVenta());
+                    existing.setPrecioCompra(productoDTO.getPrecioCompra());
+                    existing.setStockMinimo(productoDTO.getStockMinimo());
+                    existing.setEstado(productoDTO.getEstado());
+
+                    if (productoDTO.getCategoriaId() != null) {
+                        com.example.TiendaMas.entity.Categoria cat = new com.example.TiendaMas.entity.Categoria();
+                        cat.setIdCategoria(productoDTO.getCategoriaId());
+                        existing.setCategoria(cat);
+                    }
+                    if (productoDTO.getProveedorId() != null) {
+                        com.example.TiendaMas.entity.Proveedor prov = new com.example.TiendaMas.entity.Proveedor();
+                        prov.setIdProveedor(productoDTO.getProveedorId());
+                        existing.setProveedor(prov);
+                    }
+
+                    return ResponseEntity.ok(productoService.save(existing));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }

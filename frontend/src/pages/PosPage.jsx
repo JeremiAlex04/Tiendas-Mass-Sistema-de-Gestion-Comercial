@@ -67,7 +67,7 @@ const PosPage = () => {
                 setCajaDetails(response.data);
             } else {
                 setCajaAbierta(false);
-                setShowOpenCaja(true); // Prompt to open if closed
+                // setShowOpenCaja(true); // Don't auto-force. Let user click 'Open' or try to sell.
             }
         } catch (error) {
             console.error('Error checking caja status:', error);
@@ -136,7 +136,7 @@ const PosPage = () => {
             const token = localStorage.getItem('token');
             const saleData = {
                 usuarioId: user.idUsuario,
-                sucursalId: 1, // Mock sucursal - ideally should come from user profile too
+                sucursalId: user.sucursalId || 1, // Use login sucursal or fallback
                 idCliente: null, // Explicitly sending null for anonymous client
                 metodoPago: 'EFECTIVO',
                 tipoComprobante: 'BOLETA',
@@ -203,12 +203,20 @@ const PosPage = () => {
                                 placeholder="0.00"
                             />
                         </div>
-                        <button
-                            onClick={handleOpenCaja}
-                            className="w-full bg-primary text-gray-900 font-bold py-3 rounded-lg hover:bg-yellow-500 transition-colors"
-                        >
-                            Abrir Caja
-                        </button>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setShowOpenCaja(false)}
+                                className="flex-1 bg-gray-200 text-gray-800 font-medium py-3 rounded-lg hover:bg-gray-300 transition-colors"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={handleOpenCaja}
+                                className="flex-1 bg-primary text-gray-900 font-bold py-3 rounded-lg hover:bg-yellow-500 transition-colors"
+                            >
+                                Abrir Caja
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
@@ -326,16 +334,36 @@ const PosPage = () => {
                             value={selectedCategory}
                             onChange={(e) => setSelectedCategory(e.target.value)}
                         >
-                            <option value="">Todas las Categorías</option>
+                            <option value="">Categorías</option>
                             {categories.map(c => <option key={c.idCategoria} value={c.idCategoria}>{c.nombre}</option>)}
                         </select>
                     </div>
-                    {cajaAbierta && (
+                    {cajaAbierta ? (
+                        <div className="flex items-center gap-4">
+                            <div className="text-right hidden md:block">
+                                <p className="text-xs text-green-600 font-bold uppercase tracking-wide">Caja Abierta</p>
+                                <div className="text-xs text-gray-500 flex flex-col items-end">
+                                    <span>Inicio: <b>S/ {cajaDetails?.montoInicial?.toFixed(2)}</b> • {new Date(cajaDetails?.fechaApertura).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                    {cajaDetails?.ventasActuales !== undefined && (
+                                        <span className="text-gray-700 mt-1">
+                                            Ventas: <b>S/ {cajaDetails.ventasActuales.toFixed(2)}</b> | Total: <b className="text-secondary text-sm">S/ {cajaDetails.totalEsperado.toFixed(2)}</b>
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setShowCloseCaja(true)}
+                                className="bg-red-100 text-red-700 px-4 py-3 rounded-lg hover:bg-red-200 transition-colors text-sm font-semibold whitespace-nowrap shadow-sm"
+                            >
+                                Cerrar Caja
+                            </button>
+                        </div>
+                    ) : (
                         <button
-                            onClick={() => setShowCloseCaja(true)}
-                            className="bg-red-100 text-red-700 px-4 py-3 rounded-lg hover:bg-red-200 transition-colors text-sm font-semibold whitespace-nowrap shadow-sm"
+                            onClick={() => setShowOpenCaja(true)}
+                            className="bg-green-100 text-green-700 px-4 py-3 rounded-lg hover:bg-green-200 transition-colors text-sm font-semibold whitespace-nowrap shadow-sm animate-pulse"
                         >
-                            Cerrar Caja
+                            Abrir Caja (Turno Cerrado)
                         </button>
                     )}
                 </div>

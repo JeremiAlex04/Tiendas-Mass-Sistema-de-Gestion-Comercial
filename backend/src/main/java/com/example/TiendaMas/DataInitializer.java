@@ -2,8 +2,12 @@ package com.example.TiendaMas;
 
 import com.example.TiendaMas.entity.Empleado;
 import com.example.TiendaMas.entity.Sucursal;
+import com.example.TiendaMas.entity.Categoria;
+import com.example.TiendaMas.entity.Proveedor;
 import com.example.TiendaMas.repository.EmpleadoRepository;
 import com.example.TiendaMas.repository.SucursalRepository;
+import com.example.TiendaMas.repository.CategoriaRepository;
+import com.example.TiendaMas.repository.ProveedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +23,12 @@ public class DataInitializer implements CommandLineRunner {
 
     @Autowired
     private SucursalRepository sucursalRepository;
+
+    @Autowired
+    private CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private ProveedorRepository proveedorRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -90,6 +100,26 @@ public class DataInitializer implements CommandLineRunner {
             almacen.setEmail("almacen@tiendamass.com");
             empleadoRepository.save(almacen);
             System.out.println("Empleado ALMACENERO creado: almacen / almacen123");
+        }
+
+        // Initialize Default Category
+        if (categoriaRepository.count() == 0) {
+            Categoria cat = new Categoria();
+            cat.setNombre("General");
+            cat.setDescripcion("Categoría General");
+            categoriaRepository.save(cat);
+            System.out.println("Categoría General creada");
+        }
+
+        // Initialize Default Provider
+        if (proveedorRepository.count() == 0) {
+            Proveedor prov = new Proveedor();
+            prov.setRazonSocial("Proveedor General S.A.C.");
+            prov.setRuc("20100000001");
+            prov.setTelefono("999888777");
+            prov.setEmail("contacto@proveedor.com");
+            proveedorRepository.save(prov);
+            System.out.println("Proveedor General creado");
         }
     }
 }

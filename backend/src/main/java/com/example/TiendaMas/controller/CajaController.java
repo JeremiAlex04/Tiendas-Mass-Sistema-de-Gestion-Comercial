@@ -49,7 +49,16 @@ public class CajaController {
     public ResponseEntity<?> obtenerEstadoCaja(@RequestParam Long empleadoId) {
         Optional<Caja> caja = cajaService.obtenerCajaAbierta(empleadoId);
         if (caja.isPresent()) {
-            return ResponseEntity.ok(caja.get());
+            Caja c = caja.get();
+            BigDecimal ventas = cajaService.calcularVentasTurno(c);
+            BigDecimal totalEsperado = c.getMontoInicial().add(ventas);
+
+            return ResponseEntity.ok(Map.of(
+                    "estado", "ABIERTA",
+                    "fechaApertura", c.getFechaApertura(),
+                    "montoInicial", c.getMontoInicial(),
+                    "ventasActuales", ventas,
+                    "totalEsperado", totalEsperado));
         } else {
             return ResponseEntity.ok(Map.of("estado", "CERRADA"));
         }

@@ -14,8 +14,8 @@ const useAuthStore = create((set) => ({
     login: async (username, password) => {
         try {
             const response = await api.post('/auth/login', { username, password });
-            const { token, role, username: userUsername, userId } = response.data;
-            const userData = { username: userUsername, role: role.replace('ROLE_', ''), idUsuario: userId };
+            const { token, role, username: userUsername, userId, sucursalId } = response.data;
+            const userData = { username: userUsername, role: role.replace('ROLE_', ''), idUsuario: userId, sucursalId };
 
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(userData));

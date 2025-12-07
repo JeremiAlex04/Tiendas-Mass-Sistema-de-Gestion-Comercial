@@ -43,6 +43,7 @@ public class AuthService {
 
         auditoriaService.registrarAccion("LOGIN", "SISTEMA", empleado, "LOCALHOST");
 
-        return new AuthResponse(jwt, userDetails.getUsername(), role, empleado.getIdEmpleado());
+        return new AuthResponse(jwt, userDetails.getUsername(), role, empleado.getIdEmpleado(),
+                empleado.getSucursal().getIdSucursal());
     }
 }

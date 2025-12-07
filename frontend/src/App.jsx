@@ -20,7 +20,7 @@ import InventoryPage from './pages/InventoryPage';
 import ReportsPage from './pages/SalesReports';
 import StockReports from './pages/StockReports';
 
-const UnauthorizedPage = () => <div className="p-8 text-center text-red-600 font-bold">No autorizado</div>;
+
 
 function App() {
   return (
@@ -31,7 +31,7 @@ function App() {
         {/* Public Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route element={<AuthLayout />}>
-          <Route path="/unauthorized" element={<UnauthorizedPage />} />
+
         </Route>
 
         {/* Protected Routes */}

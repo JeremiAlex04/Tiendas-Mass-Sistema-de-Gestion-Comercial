@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import useAuthStore from '../store/authStore';
+import useNotificationStore from '../store/notificationStore';
 
 const ProtectedRoute = ({ allowedRoles }) => {
     const { isAuthenticated, user } = useAuthStore();
@@ -10,7 +11,10 @@ const ProtectedRoute = ({ allowedRoles }) => {
     }
 
     if (allowedRoles && !allowedRoles.includes(user?.role)) {
-        return <Navigate to="/unauthorized" replace />; // Or dashboard
+        // Show warning toast instead of full page
+        // Using setTimeout to avoid "state update during render" warning
+        setTimeout(() => useNotificationStore.getState().addNotification('Acceso restringido: No tiene permisos para esta sección.', 'warning'), 0);
+        return <Navigate to="/dashboard" replace />;
     }
 
     return <Outlet />;

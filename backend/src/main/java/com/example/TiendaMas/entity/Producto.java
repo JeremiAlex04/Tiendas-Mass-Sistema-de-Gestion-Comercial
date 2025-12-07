@@ -62,5 +62,8 @@ public class Producto {
         if (this.precioCosto == null || this.precioCosto.compareTo(this.precioCompra) != 0) {
             this.precioCosto = this.precioCompra;
         }
+        if (this.descripcion == null || this.descripcion.isEmpty()) {
+            this.descripcion = "Sin descripción";
+        }
     }
 }
