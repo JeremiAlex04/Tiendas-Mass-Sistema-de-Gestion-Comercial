@@ -25,6 +25,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,7 +66,7 @@ class VentaServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Prepare Data
+        // Preparar datos
         sucursal = new Sucursal();
         sucursal.setIdSucursal(1L);
         sucursal.setNombre("Sucursal Test");
@@ -92,21 +94,19 @@ class VentaServiceTest {
 
     @Test
     void registrarVenta_Exitoso() {
-        // Arrange
         when(empleadoRepository.findById(1L)).thenReturn(Optional.of(empleado));
         when(sucursalRepository.findById(1L)).thenReturn(Optional.of(sucursal));
         when(productoRepository.findById(100L)).thenReturn(Optional.of(producto));
         when(ventaRepository.save(any(Venta.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        // Act
         Venta resultado = ventaService.registrarVenta(ventaRequest);
 
-        // Assert
+        // Afirmar
         assertNotNull(resultado);
         assertEquals(new BigDecimal("25.00"), resultado.getTotal()); // 12.50 * 2
         assertEquals("COMPLETADA", resultado.getEstado());
 
-        // Verify Interactions
+        //Verificar interacciones
         verify(inventarioService, times(1)).ajustarStock(eq(producto), eq(sucursal), eq(2), eq("SALIDA"), anyString());
         verify(comprobanteRepository, times(1)).save(any());
         verify(auditoriaService, times(1)).registrarAccion(eq("REGISTRO_VENTA"), anyString(), eq(empleado),
@@ -115,10 +115,8 @@ class VentaServiceTest {
 
     @Test
     void registrarVenta_Falla_EmpleadoNoEncontrado() {
-        // Arrange
         when(empleadoRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // Act & Assert
         Exception exception = assertThrows(RuntimeException.class, () -> {
             ventaService.registrarVenta(ventaRequest);
         });
@@ -130,13 +128,11 @@ class VentaServiceTest {
 
     @Test
     void registrarVenta_Falla_ProductoNoEncontrado() {
-        // Arrange
         when(empleadoRepository.findById(1L)).thenReturn(Optional.of(empleado));
         when(sucursalRepository.findById(1L)).thenReturn(Optional.of(sucursal));
-        when(ventaRepository.save(any(Venta.class))).thenReturn(new Venta()); // First save
+        when(ventaRepository.save(any(Venta.class))).thenReturn(new Venta()); 
         when(productoRepository.findById(100L)).thenReturn(Optional.empty());
 
-        // Act & Assert
         Exception exception = assertThrows(RuntimeException.class, () -> {
             ventaService.registrarVenta(ventaRequest);
         });

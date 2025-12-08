@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Sistema de Gestión Comercial Tienda Mass
+=======
+# Documentación General - Sistema de Gestión Comercial Tienda Mass
+>>>>>>> f7d667d (Version 23)
 
 Este documento proporciona una descripción detallada, técnica y funcional del sistema Tienda Mass. Está diseñado para servir como referencia completa para usuarios, administradores y desarrolladores.
 
