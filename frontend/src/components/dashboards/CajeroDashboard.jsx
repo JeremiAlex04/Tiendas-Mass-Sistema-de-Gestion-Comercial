@@ -43,11 +43,11 @@ const CajeroDashboard = () => {
                     <span className="text-xl font-bold">Mis Ventas</span>
                 </Link>
 
-                {/* Quick Action: Returns (Placeholder) */}
-                <div className="bg-white text-gray-400 p-6 rounded-lg shadow-md flex flex-col items-center justify-center border border-gray-200 cursor-not-allowed">
-                    <RotateCcw className="w-12 h-12 mb-4" />
-                    <span className="text-xl font-bold">Devoluciones (Pronto)</span>
-                </div>
+                {/* Quick Action: Returns */}
+                <Link to="/devoluciones" className="bg-white hover:bg-gray-50 text-gray-800 p-6 rounded-lg shadow-md flex flex-col items-center justify-center border border-gray-200 transition-colors">
+                    <RotateCcw className="w-12 h-12 mb-4 text-red-500" />
+                    <span className="text-xl font-bold">Devoluciones</span>
+                </Link>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">

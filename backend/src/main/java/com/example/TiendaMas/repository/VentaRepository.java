@@ -6,6 +6,7 @@ import java.util.List;
 import java.time.LocalDateTime;
 
 import org.springframework.data.repository.query.Param;
+import  java.util.Optional;
 
 public interface VentaRepository extends JpaRepository<Venta, Long> {
         List<Venta> findByFechaBetween(LocalDateTime start, LocalDateTime end);
@@ -21,4 +22,7 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
         @org.springframework.data.jpa.repository.Query("SELECT DISTINCT v FROM Venta v LEFT JOIN FETCH v.detalles WHERE v.fecha BETWEEN :start AND :end")
         List<Venta> findByFechaBetweenWithDetalles(@Param("start") LocalDateTime start,
                         @Param("end") LocalDateTime end);
+
+        @org.springframework.data.jpa.repository.Query("SELECT v FROM Venta v LEFT JOIN FETCH v.detalles WHERE v.idVenta = :id")
+        Optional<Venta> findByIdWithDetalles(@Param("id") Long id);
 }

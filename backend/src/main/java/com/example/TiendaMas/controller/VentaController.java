@@ -28,15 +28,18 @@ public class VentaController {
         return ResponseEntity.ok(ventaService.registrarVenta(request));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Venta> getVentaById(@PathVariable Long id) {
+        System.out.println("Buscando venta con ID: " + id);
+        return ventaRepository.findByIdWithDetalles(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @GetMapping("/mis-ventas")
     public ResponseEntity<?> getMisVentas(org.springframework.security.core.Authentication authentication) {
         try {
             String username = authentication.getName();
-            // Assuming we have a repository to find Empleado by their associated Usuario's
-            // username
-            // or if the Empleado entity has the username directly.
-            // Based on Empleado entity: private String usuario; (unique)
-            // We need to inject EmpleadoRepository here to find it.
             return ResponseEntity.ok(ventaService.getVentasPorEmpleado(username));
         } catch (Exception e) {
             e.printStackTrace();

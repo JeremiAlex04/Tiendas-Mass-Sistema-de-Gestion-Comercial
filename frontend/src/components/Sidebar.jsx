@@ -12,6 +12,7 @@ const Sidebar = () => {
         { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', roles: ['ADMINISTRADOR', 'CAJERO', 'ALMACENERO'] },
         { path: '/pos', icon: ShoppingCart, label: 'Punto de Venta', roles: ['ADMINISTRADOR', 'CAJERO'] },
         { path: '/mis-ventas', icon: FileText, label: 'Mis Ventas', roles: ['ADMINISTRADOR', 'CAJERO'] },
+        { path: '/devoluciones', icon: Package, label: 'Devoluciones', roles: ['ADMINISTRADOR', 'CAJERO'] },
         { path: '/productos', icon: Package, label: 'Productos', roles: ['ADMINISTRADOR', 'ALMACENERO'] },
         { path: '/categorias', icon: Tag, label: 'Categorías', roles: ['ADMINISTRADOR', 'ALMACENERO'] },
         { path: '/inventario', icon: Package, label: 'Inventario', roles: ['ADMINISTRADOR', 'ALMACENERO'] },

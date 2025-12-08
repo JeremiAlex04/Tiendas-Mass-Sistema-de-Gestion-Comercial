@@ -19,6 +19,7 @@ import CategoriesPage from './pages/CategoriesPage';
 import InventoryPage from './pages/InventoryPage';
 import ReportsPage from './pages/SalesReports';
 import StockReports from './pages/StockReports';
+import ReturnsPage from './pages/ReturnsPage';
 
 
 
@@ -42,6 +43,7 @@ function App() {
             <Route element={<ProtectedRoute allowedRoles={['ADMINISTRADOR', 'CAJERO']} />}>
               <Route path="/pos" element={<PosPage />} />
               <Route path="/mis-ventas" element={<SalesHistoryPage />} />
+              <Route path="/devoluciones" element={<ReturnsPage />} />
             </Route>
 
             <Route element={<ProtectedRoute allowedRoles={['ADMINISTRADOR', 'ALMACENERO']} />}>
@@ -49,6 +51,7 @@ function App() {
               <Route path="/categorias" element={<CategoriesPage />} />
               <Route path="/inventario" element={<InventoryPage />} />
               <Route path="/reportes-stock" element={<StockReports />} />
+
               <Route path="/ordenes" element={<PurchaseOrdersPage />} />
               <Route path="/ajustes" element={<InventoryAdjustmentsPage />} />
             </Route>
